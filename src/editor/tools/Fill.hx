@@ -1,10 +1,10 @@
 package editor.tools;
 
 
-class Cursor extends Tool {
+class Fill extends Tool {
 
 	public function new(?parent) {
-		super(ToolType.Cursor, parent);
+		super(ToolType.Fill, parent);
 	}
 
 	override function push(x, y, canvas) {

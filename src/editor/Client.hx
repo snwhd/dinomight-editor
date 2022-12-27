@@ -28,8 +28,6 @@ class Client extends hxd.App {
 		this.flow = this.makeFlow();
 
 		this.toolbar = new Toolbar(this.flow);
-		this.toolbar.exactHeight = this.flow.innerHeight;
-		this.toolbar.exactWidth = Style.ToolbarWidth;
 
 		var canvasContainer = new FlowBase(this.flow);
 		var maxWidth = this.flow.innerWidth - (

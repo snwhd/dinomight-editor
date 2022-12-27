@@ -13,7 +13,6 @@ class Brush extends Tool {
 	}
 
 	override function push(x, y, canvas) {
-		trace('brush push');
 		canvas.put(x, y, this.tileType);
 	}
 

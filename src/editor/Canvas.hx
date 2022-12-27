@@ -193,9 +193,7 @@ class Canvas extends FlowBase {
 	}
 
 	private function onPush(e: hxd.Event) {
-		trace('push');
 		var point = this.relToTile(e);
-		trace(point);
 		if (point != null) {
 			var tool = this.toolbar.currentTool;
 			tool.onCanvasPush(point.x, point.y, this);

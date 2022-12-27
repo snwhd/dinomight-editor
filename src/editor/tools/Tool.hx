@@ -2,10 +2,21 @@ package editor.tools;
 
 import editor.Canvas;
 import editor.util.FlowBase;
+import editor.util.TextUtil;
 
 class Tool extends FlowBase {
 
+	public static final TOOL_NAMES : Map<ToolType, String> = [
+		Cursor    => "cursor",
+		Brush     => "brush",
+		Fill      => "fill",
+		Eraser    => "eraser",
+		BoxSelect => "select",
+		Wand      => "wand",
+	];
+
 	public var type (default, null) : ToolType;
+	public var toolname (default, null) : String;
 
 	// invalid initial position for canvas
 	private var lastPosition : h2d.col.IPoint = new h2d.col.IPoint(-1, -1);
@@ -15,10 +26,34 @@ class Tool extends FlowBase {
 	public function new(type: ToolType, ?parent) {
 		super(parent);
 		this.type = type;
+		this.toolname = TOOL_NAMES[type];
+		this.drawUI();
+
 		this.enableInteractive = true;
 		this.interactive.onClick = function (e) {
 			this.onIconClick();
 		}
+	}
+
+	private function drawUI() {
+		this.layout = Horizontal;
+		this.verticalAlign = Middle;
+		this.horizontalAlign = Middle;
+
+		this.exactWidth = Std.int(this.flowParent.innerWidth);
+		// this.exactHeight = this.exactWidth;
+		this.backgroundColor = Style.DeselectedColor;
+		var text = TextUtil.text(this.toolname, Large);
+		text.textColor = Style.White;
+		this.addChild(text);
+	}
+
+	public function select() {
+		this.backgroundColor = Style.SelectedColor;
+	}
+
+	public function deselect() {
+		this.backgroundColor = Style.DeselectedColor;
 	}
 
 	public function onCanvasPush(
@@ -26,12 +61,8 @@ class Tool extends FlowBase {
 		y: Int,
 		canvas: Canvas
 	) : Void {
-		trace('tool push');
 		this.isDown = true;
 		var position = new h2d.col.IPoint(x, y);
-		trace(position);
-		trace(this.lastPosition);
-		trace(this.deltaOnly);
 		if (!this.deltaOnly || !position.equals(this.lastPosition)) {
 			this.push(x, y, canvas);
 		}

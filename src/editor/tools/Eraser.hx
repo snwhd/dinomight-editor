@@ -1,10 +1,10 @@
 package editor.tools;
 
 
-class Cursor extends Tool {
+class Eraser extends Tool {
 
 	public function new(?parent) {
-		super(ToolType.Cursor, parent);
+		super(ToolType.Eraser, parent);
 	}
 
 	override function push(x, y, canvas) {
