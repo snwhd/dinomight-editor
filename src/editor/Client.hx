@@ -8,7 +8,8 @@ class Client extends hxd.App {
 
 	private var flow : h2d.Flow;
 	private var toolbar : Toolbar;
-	private var canvas : FlowBase;
+	private var canvas : Canvas;
+
 	private var toolOptions : FlowBase;
 	private var settings : FlowBase;
 	
@@ -44,20 +45,7 @@ class Client extends hxd.App {
 		canvasContainer.horizontalAlign = Middle;
 		canvasContainer.backgroundColor = Style.BackgroundColor;
 
-		this.canvas = new FlowBase(canvasContainer);
-		var canvasSize = Std.int(Math.min(
-			this.flow.innerHeight * 0.95,
-			maxWidth
-		));
-		this.canvas.exactHeight = canvasSize;
-		this.canvas.exactWidth = canvasSize;
-
-		// this.canvas.exactHeight = Std.int(this.flow.innerHeight * 0.85);
-		// this.canvas.exactWidth = this.flow.innerWidth - (
-		// 	Style.Padding * 2  +
-		// 	Style.ToolbarWidth +
-		// 	Style.SidebarWidth
-		// );
+		this.canvas = new Canvas(canvasContainer);
 
 		var sidebar = new FlowBase(this.flow);
 		sidebar.layout = Vertical;
