@@ -1,6 +1,7 @@
 package editor;
 
 import editor.util.FlowBase;
+import editor.util.Random;
 
 
 typedef CanvasTile = {
@@ -29,7 +30,7 @@ class Canvas extends FlowBase {
 	private var canvasBackground : h2d.Object;
 	private var tiles : Array<Null<CanvasTile>> = [];
 
-	private var iconTiles : Map<TileType, h2d.Tile>;
+	private var iconTiles : Map<TileType, Array<h2d.Tile>>;
 	private var iconSize : Int;
 
 	public function new(
@@ -69,25 +70,36 @@ class Canvas extends FlowBase {
 	}
 
 	private function loadIconTiles(size: Int) {
-		var tiles : Map<TileType, h2d.Tile> = [
-			Egg => hxd.Res.img.icons.egg.toTile(),
+		var tiles : Map<TileType, Array<h2d.Tile>> = [
+			Block  => [hxd.Res.img.icons.block.toTile()],
+			Bomb   => [hxd.Res.img.icons.bomb.toTile()],
+			Egg    => [hxd.Res.img.icons.egg.toTile()],
+			// TODO: Meteor => [hxd.Res.img.icons.meteor.toTile()],
+			Range  => [hxd.Res.img.icons.range.toTile()],
+			Spawn  => [hxd.Res.img.icons.dino.toTile()],
+			Speed  => [hxd.Res.img.icons.speed.toTile()],
+			Tree   => [
+				hxd.Res.img.icons.treeA.toTile(),
+				hxd.Res.img.icons.treeB.toTile(),
+			],
 		];
 
-		for (type => tile in tiles.keyValueIterator()) {
-			// scale down tiles to fit in the grid
-			// Note: this assumes we are always scaling down, which is
-			//       likely the case unless on a really high res monitor
-			trace('tile size: ${tile.width} x ${tile.height}');
-			if (tile.width > tile.height) {
-				var ratio = tile.height / tile.width;
-				tile.scaleToSize(size, size * ratio);
-				var yRemainder = size - tile.height;
-				tile.dy = yRemainder / 2;
-			} else {
-				var ratio = tile.width / tile.height;
-				tile.scaleToSize(size * ratio, size);
-				var xRemainder = size - tile.width;
-				tile.dx = xRemainder / 2;
+		for (type => tiles in tiles.keyValueIterator()) {
+			for (tile in tiles) {
+				// scale down tiles to fit in the grid
+				// Note: this assumes we are always scaling down, which is
+				//       likely the case unless on a really high res monitor
+				if (tile.width > tile.height) {
+					var ratio = tile.height / tile.width;
+					tile.scaleToSize(size, size * ratio);
+					var yRemainder = size - tile.height;
+					tile.dy = yRemainder / 2;
+				} else {
+					var ratio = tile.width / tile.height;
+					tile.scaleToSize(size * ratio, size);
+					var xRemainder = size - tile.width;
+					tile.dx = xRemainder / 2;
+				}
 			}
 		}
 		return tiles;
@@ -143,8 +155,11 @@ class Canvas extends FlowBase {
 			existing.bmp.remove();
 		}
 
-		var bmp = new h2d.Bitmap(this.iconTiles[t], this.canvasBackground);
-		// var bmp = new h2d.Bitmap(h2d.Tile.fromColor(0xff0000, this.iconSize, this.iconSize), this.canvasBackground);
+		var rand = Random.createSafeRand();
+		var tiles = this.iconTiles[t];
+		var choice = rand.random(tiles.length);
+
+		var bmp = new h2d.Bitmap(tiles[choice], this.canvasBackground);
 		bmp.x = x * this.iconSize;
 		bmp.y = y * this.iconSize;
 		this.tiles[index] = {
@@ -158,15 +173,15 @@ class Canvas extends FlowBase {
 		var ty = Std.int(e.relY / this.iconSize);
 
 		// do not allow editing of the outer ring of trees
-		if (tx < 1 || tx >= this.canvasWidth - 2) {
+		if (tx < 1 || tx >= this.canvasWidth - 1) {
 			return;
 		}
-		if (ty < 1 || ty >= this.canvasHeight - 2) {
+		if (ty < 1 || ty >= this.canvasHeight - 1) {
 			return;
 		}
 
 		// TODO: use tool
-		this.put(tx, ty, Egg);
+		this.put(tx, ty, Tree);
 	}
 
 }
