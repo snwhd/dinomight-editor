@@ -1,0 +1,6 @@
+-cp src
+-lib heaps
+-lib domkit
+-js build/client/client.js
+-main editor.Client
+-debug
