@@ -2,12 +2,12 @@ package editor;
 
 
 enum TileType {
-	SPAWN;
-	STONE;
-	TREE;
-	EGG;
-	METEOR;
-	BOMB;
-	RANGE;
-	SPEED;
+	Spawn;
+	Block;
+	Tree;
+	Egg;
+	Meteor;
+	Bomb;
+	Range;
+	Speed;
 }
