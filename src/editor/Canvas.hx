@@ -3,6 +3,8 @@ package editor;
 import editor.util.FlowBase;
 import editor.util.Random;
 
+import editor.tools.Toolbar;
+
 
 typedef CanvasTile = {
 	type: TileType,
@@ -33,12 +35,16 @@ class Canvas extends FlowBase {
 	private var iconTiles : Map<TileType, Array<h2d.Tile>>;
 	private var iconSize : Int;
 
+	private var toolbar : Toolbar;
+
 	public function new(
+		toolbar: Toolbar,
 		parent: FlowBase,
 		width = DEFAULT_WIDTH,
 		height = DEFAULT_HEIGHT
 	) : Void {
 		super(parent);
+		this.toolbar = toolbar;
 		this.assertValidSize(width, height);
 
 		// increase for the outer ring of trees
@@ -63,7 +69,11 @@ class Canvas extends FlowBase {
 		this.exactWidth = maxIconSize * this.canvasWidth;
 
 		this.enableInteractive = true;
-		this.interactive.onClick = this.onClick;
+		this.interactive.onPush = this.onPush;
+		this.interactive.onRelease = this.onRelease;
+		this.interactive.onMove = this.onMove;
+		this.interactive.onOut = this.onOut;
+		this.interactive.onOver = this.onOver;
 
 		this.canvasBackground = this.createBackground();
 		this.addChild(this.canvasBackground);
@@ -168,20 +178,62 @@ class Canvas extends FlowBase {
 		}
 	}
 
-	private function onClick(e: hxd.Event) {
+	private function relToTile(e: hxd.Event) : Null<h2d.col.IPoint> {
 		var tx = Std.int(e.relX / this.iconSize);
 		var ty = Std.int(e.relY / this.iconSize);
 
 		// do not allow editing of the outer ring of trees
 		if (tx < 1 || tx >= this.canvasWidth - 1) {
-			return;
+			return null;
 		}
 		if (ty < 1 || ty >= this.canvasHeight - 1) {
-			return;
+			return null;
 		}
-
-		// TODO: use tool
-		this.put(tx, ty, Tree);
+		return new h2d.col.IPoint(tx, ty);
 	}
+
+	private function onPush(e: hxd.Event) {
+		trace('push');
+		var point = this.relToTile(e);
+		trace(point);
+		if (point != null) {
+			var tool = this.toolbar.currentTool;
+			tool.onCanvasPush(point.x, point.y, this);
+		}
+	}
+
+	private function onRelease(e: hxd.Event) {
+		var point = this.relToTile(e);
+		if (point != null) {
+			var tool = this.toolbar.currentTool;
+			tool.onCanvasRelease(point.x, point.y, this);
+		}
+	}
+
+	private function onMove(e: hxd.Event) {
+		var point = this.relToTile(e);
+		if (point != null) {
+			var tool = this.toolbar.currentTool;
+			tool.onCanvasMove(point.x, point.y, this);
+		}
+	}
+
+	private function onOut(e: hxd.Event) {
+		var point = this.relToTile(e);
+		if (point != null) {
+			var tool = this.toolbar.currentTool;
+			tool.onCanvasOut(this);
+		}
+	}
+
+	private function onOver(e: hxd.Event) {
+		var point = this.relToTile(e);
+		if (point != null) {
+			var tool = this.toolbar.currentTool;
+			var isDown = false; // TODO
+			tool.onCanvasOver(isDown, this);
+		}
+	}
+
 
 }

@@ -6,8 +6,8 @@ import editor.util.FlowBase;
 class Toolbar extends FlowBase {
 
 	private var tools : Array<Tool> = [
-		new Cursor(),
-		// new Brush(),
+		// new Cursor(),
+		new Brush(),
 		// new Fill(),
 		// new Eraser(),
 		// new BoxSelect(),
@@ -20,7 +20,7 @@ class Toolbar extends FlowBase {
 	public function new(?parent) {
 		super(parent);
 		for (tool in this.tools) {
-			tool.onClick = function () {
+			tool.onIconClick = function () {
 				this.select(tool.type);
 			}
 		}

@@ -31,7 +31,6 @@ class Client extends hxd.App {
 		this.toolbar.exactHeight = this.flow.innerHeight;
 		this.toolbar.exactWidth = Style.ToolbarWidth;
 
-		// this.canvas = new Canvas(this.flow);
 		var canvasContainer = new FlowBase(this.flow);
 		var maxWidth = this.flow.innerWidth - (
 			Style.Padding * 2  +
@@ -45,7 +44,7 @@ class Client extends hxd.App {
 		canvasContainer.horizontalAlign = Middle;
 		canvasContainer.backgroundColor = Style.BackgroundColor;
 
-		this.canvas = new Canvas(canvasContainer);
+		this.canvas = new Canvas(this.toolbar, canvasContainer);
 
 		var sidebar = new FlowBase(this.flow);
 		sidebar.layout = Vertical;
