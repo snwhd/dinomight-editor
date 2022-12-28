@@ -8,9 +8,13 @@ class Eraser extends Tool {
 	}
 
 	override function push(x, y, canvas) {
+		canvas.put(x, y, null);
 	}
 
 	override function moved(x, y, canvas) {
+		if (this.isDown) {
+			canvas.put(x, y, null);
+		}
 	}
 
 	override function release(x, y, canvas) {

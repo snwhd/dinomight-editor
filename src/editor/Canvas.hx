@@ -156,13 +156,18 @@ class Canvas extends FlowBase {
 		return this.tiles[index];
 	}
 
-	public function put(x: Int, y: Int, t: TileType) {
+	public function put(x: Int, y: Int, t: Null<TileType>) {
 		this.assertInBounds(x, y);
 		var index = y * this.canvasWidth + x;
 
 		var existing = this.tile(x, y);
 		if (existing != null) {
 			existing.bmp.remove();
+		}
+
+		if (t == null) {
+			this.tiles[index] = null;
+			return;
 		}
 
 		var rand = Random.createSafeRand();
