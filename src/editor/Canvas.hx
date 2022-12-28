@@ -27,6 +27,8 @@ class Canvas extends FlowBase {
 	private static inline var DEFAULT_WIDTH  = 13;
 	private static inline var DEFAULT_HEIGHT = 13;
 
+	private var rand : hxd.Rand;
+
 	private var canvasWidth : Int;
 	private var canvasHeight : Int;
 	private var canvasBackground : h2d.Object;
@@ -63,7 +65,6 @@ class Canvas extends FlowBase {
 
 		this.iconSize = maxIconSize;
 		this.iconTiles = this.loadIconTiles(this.iconSize);
-		// TODO: draw trees
 
 		this.exactHeight = maxIconSize * this.canvasHeight;
 		this.exactWidth = maxIconSize * this.canvasWidth;
@@ -77,6 +78,16 @@ class Canvas extends FlowBase {
 
 		this.canvasBackground = this.createBackground();
 		this.addChild(this.canvasBackground);
+
+		this.rand = Random.createSafeRand();
+		for (x in 0 ... this.canvasWidth) {
+			this.put(x, 0, Tree);
+			this.put(x, this.canvasHeight - 1, Tree);
+		}
+		for (y in 0 ... this.canvasHeight) {
+			this.put(0, y, Tree);
+			this.put(this.canvasWidth - 1, y, Tree);
+		}
 	}
 
 	private function loadIconTiles(size: Int) {
@@ -170,9 +181,8 @@ class Canvas extends FlowBase {
 			return;
 		}
 
-		var rand = Random.createSafeRand();
 		var tiles = this.iconTiles[t];
-		var choice = rand.random(tiles.length);
+		var choice = this.rand.random(tiles.length);
 
 		var bmp = new h2d.Bitmap(tiles[choice], this.canvasBackground);
 		bmp.x = x * this.iconSize;
