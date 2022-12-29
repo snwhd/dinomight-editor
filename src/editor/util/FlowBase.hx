@@ -36,6 +36,7 @@ class FlowBase extends h2d.Flow {
 
 	public function set_backgroundColor(color: Null<Int>) {
 		if (color != this.backgroundColor) {
+			this.backgroundColor = color;
 			if (color == null) {
 				this.backgroundTile = null;
 			} else {

@@ -26,6 +26,8 @@ class Tool extends FlowBase {
 	private var deltaOnly = true;
 	private var isDown = false;
 
+	private var selectedPalette : FlowBase = null;
+
 	public function new(type: ToolType, ?parent) {
 		super(parent);
 		this.type = type;
@@ -73,16 +75,37 @@ class Tool extends FlowBase {
 		var tilesMap = Canvas.loadIconTiles(size);
 
 		var flows = [];
-		for (type => tiles in tilesMap.keyValueIterator()) {
+		var tileOrder : Array<TileType> = [
+			Block,
+			Egg,
+			Spawn,
+			Tree,
+			Meteor,
+			Bomb,
+			Range,
+			Speed,
+		];
+		for (type in tileOrder) {
+			var tiles = tilesMap[type];
 			var tile = tiles[0];
 			var flow = new FlowBase();
+			flow.exactWidth = size;
+			flow.exactHeight = size;
+			flow.verticalAlign = Middle;
+			flow.horizontalAlign = Middle;
 			flow.enableInteractive = true;
 			flow.interactive.onClick = function(e) {
+				if (this.selectedPalette != null) {
+					this.selectedPalette.backgroundColor = null;
+				}
 				this.paletteSelect(type);
+				this.selectedPalette = flow;
+				this.selectedPalette.backgroundColor = Style.SelectedColor;
 			}
 			var bmp = new h2d.Bitmap(tile, flow);
 			flows.push(flow);
 		}
+		flows[0].interactive.onClick(null);
 		return flows;
 	}
 
