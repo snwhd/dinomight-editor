@@ -48,16 +48,16 @@ class New extends Option {
 
 	override function onClick() {
 		var width = Std.parseInt(this.widthInput.text);
-		if (width == null || width < 13) {
+		if (width == null || width < 13 || width > 100) {
 			#if js
-			js.Browser.alert('invalid width (min 13)');
+			js.Browser.alert('invalid width (min 13, max 100)');
 			#end
 			return;
 		}
 		var height = Std.parseInt(this.heightInput.text);
-		if (height == null || height < 13) {
+		if (height == null || height < 13 || height > 100) {
 			#if js
-			js.Browser.alert('invalid height (min 13)');
+			js.Browser.alert('invalid height (min 13, max 100)');
 			#end
 			return;
 		}
