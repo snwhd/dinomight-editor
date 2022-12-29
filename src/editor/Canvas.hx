@@ -30,10 +30,10 @@ class Canvas extends FlowBase {
 
 	private var rand : hxd.Rand;
 
-	private var canvasWidth : Int;
-	private var canvasHeight : Int;
+	public var canvasWidth : Int;
+	public var canvasHeight : Int;
 	private var canvasBackground : h2d.Object;
-	private var tiles : Array<Null<CanvasTile>> = [];
+	public var tiles : Array<Null<CanvasTile>> = [];
 
 	private var iconTiles : Map<TileType, Array<h2d.Tile>>;
 	private var iconSize : Int;

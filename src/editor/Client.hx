@@ -100,4 +100,54 @@ class Client extends hxd.App {
 		this.makeUI();
 	}
 
+	public function export(filename: String) {
+		var baseText = hxd.Res.loader.load('baseJson.json').toText();
+		var layerText = hxd.Res.loader.load('layerJson.json').toText();
+		var base = haxe.Json.parse(baseText);
+		var layer = haxe.Json.parse(layerText);
+		base.width = this.canvas.canvasWidth;
+		base.height = this.canvas.canvasHeight;
+		layer.width = this.canvas.canvasWidth;
+		layer.height = this.canvas.canvasHeight;
+		var data : Array<Int> = [];
+		for (tile in this.canvas.tiles) {
+			if (tile == null) {
+				data.push(0);
+			} else {
+				data.push(switch(tile.type) {
+					case Block:  3;
+					case Bomb:   7;
+					case Egg:    5;
+					case Meteor: 6;
+					case Range:  8;
+					case Spawn:  1;
+					case Speed:  9;
+					case Tree:   4;
+					case null:   0;
+				});
+			}
+		}
+		layer.data = data;
+		base.layers = [layer];
+		var content = haxe.Json.stringify(base);
+		var filename = '$filename.tmj';
+
+		#if js
+		var a = js.Browser.document.createAnchorElement();
+		var blob = new js.html.Blob(
+			[haxe.io.Bytes.ofString(content).getData()],
+			{type:'application/json'}
+		);
+		var url = js.html.URL.createObjectURL(blob);
+		a.href = url;
+		a.download = filename;
+		js.Browser.document.body.appendChild(a);
+		a.click();
+		js.Browser.window.setTimeout(function() {
+			js.Browser.document.body.removeChild(a);
+			js.html.URL.revokeObjectURL(url);
+		}, 0);
+		#end
+	}
+
 }

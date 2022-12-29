@@ -1,0 +1,17 @@
+{
+	"compressionlevel": -1,
+	"infinite": false,
+	"nextlayerid": 2,
+	"nextobjectid": 1,
+	"orientation": "orthogonal",
+	"renderorder": "right-down",
+	"tiledversion": "1.9.2",
+	"tilewidth": 250,
+	"tileheight": 250,
+	"tilesets": [{
+		"firstgid": 1,
+		"source": "dinomight.tsx"
+	}],
+	"type": "map",
+	"version": "1.9"
+}
