@@ -2,6 +2,7 @@ package editor;
 
 import editor.util.FlowBase;
 import editor.util.Random;
+import editor.util.ImageUtil;
 
 import editor.tools.Toolbar;
 
@@ -64,7 +65,7 @@ class Canvas extends FlowBase {
 		var maxIconSize = Std.int(Math.min(maxIconWidth, maxIconHeight));
 
 		this.iconSize = maxIconSize;
-		this.iconTiles = this.loadIconTiles(this.iconSize);
+		this.iconTiles = Canvas.loadIconTiles(this.iconSize);
 
 		this.exactHeight = maxIconSize * this.canvasHeight;
 		this.exactWidth = maxIconSize * this.canvasWidth;
@@ -90,12 +91,12 @@ class Canvas extends FlowBase {
 		}
 	}
 
-	private function loadIconTiles(size: Int) {
+	public static function loadIconTiles(size: Int) {
 		var tiles : Map<TileType, Array<h2d.Tile>> = [
 			Block  => [hxd.Res.img.icons.block.toTile()],
 			Bomb   => [hxd.Res.img.icons.bomb.toTile()],
 			Egg    => [hxd.Res.img.icons.egg.toTile()],
-			// TODO: Meteor => [hxd.Res.img.icons.meteor.toTile()],
+			Meteor => [hxd.Res.img.icons.meteor.toTile()],
 			Range  => [hxd.Res.img.icons.range.toTile()],
 			Spawn  => [hxd.Res.img.icons.dino.toTile()],
 			Speed  => [hxd.Res.img.icons.speed.toTile()],
@@ -107,20 +108,7 @@ class Canvas extends FlowBase {
 
 		for (type => tiles in tiles.keyValueIterator()) {
 			for (tile in tiles) {
-				// scale down tiles to fit in the grid
-				// Note: this assumes we are always scaling down, which is
-				//       likely the case unless on a really high res monitor
-				if (tile.width > tile.height) {
-					var ratio = tile.height / tile.width;
-					tile.scaleToSize(size, size * ratio);
-					var yRemainder = size - tile.height;
-					tile.dy = yRemainder / 2;
-				} else {
-					var ratio = tile.width / tile.height;
-					tile.scaleToSize(size * ratio, size);
-					var xRemainder = size - tile.width;
-					tile.dx = xRemainder / 2;
-				}
+				ImageUtil.scaleToSquare(tile, size);
 			}
 		}
 		return tiles;

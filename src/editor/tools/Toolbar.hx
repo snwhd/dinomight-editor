@@ -23,11 +23,11 @@ class Toolbar extends FlowBase {
 
 		this.tools = [
 			new Brush(this),
-			new Cursor(this),
-			new Fill(this),
+			// new Cursor(this),
+			// new Fill(this),
 			new Eraser(this),
-			new BoxSelect(this),
-			new Wand(this),
+			// new BoxSelect(this),
+			// new Wand(this),
 		];
 		this.currentTool.select();
 

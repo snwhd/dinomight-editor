@@ -1,8 +1,11 @@
 package editor.tools;
 
 import editor.Canvas;
+import editor.Style;
+import editor.TileType;
 import editor.util.FlowBase;
 import editor.util.TextUtil;
+import editor.util.ImageUtil;
 
 class Tool extends FlowBase {
 
@@ -54,6 +57,36 @@ class Tool extends FlowBase {
 
 	public function deselect() {
 		this.backgroundColor = Style.DeselectedColor;
+	}
+
+	public function getOptions() : Array<FlowBase> {
+		return [];
+	}
+
+	public function paletteOptions() : Array<FlowBase> {
+		var width = Style.ToolbarWidth - (
+			(Style.ToolbarCols + 1) * Style.ToolbarPadding
+		);
+		var size = Std.int(width / Style.ToolbarCols);
+		size = 160;
+
+		var tilesMap = Canvas.loadIconTiles(size);
+
+		var flows = [];
+		for (type => tiles in tilesMap.keyValueIterator()) {
+			var tile = tiles[0];
+			var flow = new FlowBase();
+			flow.enableInteractive = true;
+			flow.interactive.onClick = function(e) {
+				this.paletteSelect(type);
+			}
+			var bmp = new h2d.Bitmap(tile, flow);
+			flows.push(flow);
+		}
+		return flows;
+	}
+
+	private function paletteSelect(tile: TileType) {
 	}
 
 	public function onCanvasPush(

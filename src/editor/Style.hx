@@ -24,7 +24,10 @@ class Style {
 	public static inline var Padding = 40;
 	public static inline var MenuSpacing = 40;
 
-	public static inline var ToolbarWidth = 400;
+	public static inline var ToolbarWidth   = 400;
+	public static inline var ToolbarPadding = 12;
+	public static inline var ToolbarCols    = 4;
+
 	public static inline var SidebarWidth = 800;
 
 	public static var fonts : Map<Int, h2d.Font> = [];

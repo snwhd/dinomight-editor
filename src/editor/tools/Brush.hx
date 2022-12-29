@@ -12,6 +12,14 @@ class Brush extends Tool {
 		super(ToolType.Brush, parent);
 	}
 
+	override function getOptions() {
+		return this.paletteOptions();
+	}
+
+	override function paletteSelect(tile) {
+		this.tileType = tile;
+	}
+
 	override function push(x, y, canvas) {
 		canvas.put(x, y, this.tileType);
 	}

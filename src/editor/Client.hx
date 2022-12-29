@@ -9,8 +9,8 @@ class Client extends hxd.App {
 	private var flow : h2d.Flow;
 	private var toolbar : Toolbar;
 	private var canvas : Canvas;
+	private var toolOptions : ToolOptions;
 
-	private var toolOptions : FlowBase;
 	private var settings : FlowBase;
 	
 
@@ -51,20 +51,16 @@ class Client extends hxd.App {
 		sidebar.exactWidth = Style.SidebarWidth;
 		sidebar.backgroundColor = Style.BackgroundColor;
 
-		this.toolOptions = new FlowBase(sidebar);
-		this.toolOptions.exactWidth = Style.SidebarWidth;
-		this.toolOptions.exactHeight = Std.int((
-			sidebar.innerHeight - sidebar.verticalSpacing
-		) / 2);
+		this.toolOptions = new ToolOptions(this.toolbar.currentTool, sidebar);
+		this.toolbar.onToolChanged = function (tool) {
+			this.toolOptions.toolChanged(tool);
+		};
 
 		this.settings = new FlowBase(sidebar);
 		this.settings.exactWidth = Style.SidebarWidth;
 		this.settings.exactHeight = Std.int((
 			sidebar.innerHeight - sidebar.verticalSpacing
 		) / 2);
-
-
-		//TODO: this.editor = this.makeEditor(this.flow);
 	}
 
 	private function makeFlow() {
