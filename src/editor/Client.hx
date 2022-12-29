@@ -12,6 +12,9 @@ class Client extends hxd.App {
 	private var toolOptions : ToolOptions;
 
 	private var settings : FlowBase;
+
+	private var canvasWidth = Canvas.DEFAULT_WIDTH;
+	private var canvasHeight = Canvas.DEFAULT_HEIGHT;
 	
 
 	static function main() {
@@ -25,6 +28,7 @@ class Client extends hxd.App {
 	}
 
 	public function makeUI() {
+		this.s2d.removeChildren();
 		this.flow = this.makeFlow();
 
 		this.toolbar = new Toolbar(this.flow);
@@ -42,7 +46,12 @@ class Client extends hxd.App {
 		canvasContainer.horizontalAlign = Middle;
 		canvasContainer.backgroundColor = Style.BackgroundColor;
 
-		this.canvas = new Canvas(this.toolbar, canvasContainer);
+		this.canvas = new Canvas(
+			this.toolbar,
+			canvasContainer,
+			this.canvasWidth,
+			this.canvasHeight
+		);
 
 		var sidebar = new FlowBase(this.flow);
 		sidebar.layout = Vertical;
@@ -56,7 +65,7 @@ class Client extends hxd.App {
 			this.toolOptions.toolChanged(tool);
 		};
 
-		this.settings = new FlowBase(sidebar);
+		this.settings = new Settings(this, sidebar);
 		this.settings.exactWidth = Style.SidebarWidth;
 		this.settings.exactHeight = Std.int((
 			sidebar.innerHeight - sidebar.verticalSpacing
@@ -83,6 +92,12 @@ class Client extends hxd.App {
 	// }
 
 	override function update(dt: Float) {
+	}
+
+	public function newMap(width: Int, height: Int) {
+		this.canvasWidth = width;
+		this.canvasHeight = height;
+		this.makeUI();
 	}
 
 }

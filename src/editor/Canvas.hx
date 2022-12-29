@@ -25,8 +25,8 @@ class Canvas extends FlowBase {
 		0xFFFFD746,
 	];
 
-	private static inline var DEFAULT_WIDTH  = 13;
-	private static inline var DEFAULT_HEIGHT = 13;
+	public static inline var DEFAULT_WIDTH  = 13;
+	public static inline var DEFAULT_HEIGHT = 13;
 
 	private var rand : hxd.Rand;
 

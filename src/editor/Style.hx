@@ -12,14 +12,17 @@ enum FontSize {
 
 class Style {
 
-	public static inline var Black    = 0x000000;
-	public static inline var White    = 0xFFFFFF;
+	public static inline var Black = 0x000000;
+	public static inline var White = 0xFFFFFF;
+	public static inline var Blue  = 0xA0A0FF;
 	public static inline var BarColor = 0x212121;
 	public static inline var BackgroundColor = 0x303030;
 	public static inline var ForegroundColor = 0x424242;
 
 	public static inline var SelectedColor   = 0x16A34A;
 	public static inline var DeselectedColor = 0x3F1D6B;
+
+	public static inline var InputColor = 0xFFFFFF;
 
 	public static inline var Padding = 40;
 	public static inline var MenuSpacing = 40;
