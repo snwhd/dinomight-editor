@@ -100,17 +100,30 @@ class Client extends hxd.App {
 		this.makeUI();
 	}
 
-	public function export(filename: String) {
+	public function save() {
 		var baseText = hxd.Res.loader.load('baseJson.json').toText();
 		var layerText = hxd.Res.loader.load('layerJson.json').toText();
 		var base = haxe.Json.parse(baseText);
 		var layer = haxe.Json.parse(layerText);
-		base.width = this.canvas.canvasWidth;
-		base.height = this.canvas.canvasHeight;
-		layer.width = this.canvas.canvasWidth;
-		layer.height = this.canvas.canvasHeight;
+		// remove the border of trees here
+		// TODO: move this to Canvas.export
+		base.width = this.canvas.canvasWidth - 2;
+		base.height = this.canvas.canvasHeight - 2;
+		layer.width = this.canvas.canvasWidth - 2;
+		layer.height = this.canvas.canvasHeight - 2;
 		var data : Array<Int> = [];
-		for (tile in this.canvas.tiles) {
+
+		for (i => tile in this.canvas.tiles.keyValueIterator()) {
+			// skip outer edges
+			if (
+				Std.int(i / this.canvas.canvasWidth) == 0 ||
+				Std.int(i / this.canvas.canvasWidth) == this.canvas.canvasHeight - 1 ||
+				i % this.canvas.canvasWidth == 0 ||
+				i % this.canvas.canvasWidth == this.canvas.canvasWidth - 1
+			) {
+				continue;
+			}
+
 			if (tile == null) {
 				data.push(0);
 			} else {
@@ -130,24 +143,76 @@ class Client extends hxd.App {
 		layer.data = data;
 		base.layers = [layer];
 		var content = haxe.Json.stringify(base);
-		var filename = '$filename.tmj';
+		return content;
+	}
 
+	private function alert(s: String) {
 		#if js
-		var a = js.Browser.document.createAnchorElement();
-		var blob = new js.html.Blob(
-			[haxe.io.Bytes.ofString(content).getData()],
-			{type:'application/json'}
-		);
-		var url = js.html.URL.createObjectURL(blob);
-		a.href = url;
-		a.download = filename;
-		js.Browser.document.body.appendChild(a);
-		a.click();
-		js.Browser.window.setTimeout(function() {
-			js.Browser.document.body.removeChild(a);
-			js.html.URL.revokeObjectURL(url);
-		}, 0);
+		js.Browser.alert(s);
 		#end
+	}
+
+	public function load(data: Dynamic) {
+		var layers : Array<Dynamic> = data.layers;
+		var height : Int = data.height;
+		var width : Int = data.width;
+
+		if (
+			Type.typeof(height) != Type.ValueType.TInt ||
+			Type.typeof(width) != Type.ValueType.TInt ||
+			height == null ||
+			width == null ||
+			height < Canvas.MIN_HEIGHT ||
+			width < Canvas.MIN_WIDTH ||
+			height > Canvas.MAX_HEIGHT ||
+			width > Canvas.MAX_WIDTH ||
+			height * width > Canvas.MAX_TILES
+		) {
+			this.alert('invalid width/height');
+			trace(data);
+			trace('width: $width , height: $height');
+			return;
+		}
+
+		if (Type.getClass(layers) != Array || layers.length != 1) {
+			this.alert('invalid layer data');
+			trace(data);
+			return;
+		}
+
+		var layer : Dynamic = layers[0];
+		var size = width * height;
+		if (
+			layer.width != width ||
+			layer.height != height ||
+			Type.getClass(layer.data) != Array ||
+			layer.data.length != size
+		) {
+			this.alert('invalid layer data / data size');
+			trace(data);
+			return;
+		}
+
+		var ldata : Array<Int> = layer.data;
+
+		this.newMap(width, height);
+		for (x in 0 ... width) for (y in 0 ... height) {
+			var i = (y * width) + x;
+			var value = ldata[i];
+			this.canvas.put(x + 1, y + 1, switch(value) {
+				case 0: null;
+				case 1: Spawn;
+				case 3: Block;
+				case 4: Tree;
+				case 5: Egg;
+				case 6: Meteor;
+				case 7: Bomb;
+				case 8: Range;
+				case 9: Speed;
+				case _: null;
+			});
+		}
+
 	}
 
 }

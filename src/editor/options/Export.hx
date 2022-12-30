@@ -33,8 +33,25 @@ class Export extends Option {
 	}
 
 	override function onClick() {
-		var filename = this.filenameInput.text;
-		this.settings.client.export(filename);
+		var content = this.settings.client.save();
+		var filename = '${this.filenameInput.text}.tmj';
+
+		#if js
+		var a = js.Browser.document.createAnchorElement();
+		var blob = new js.html.Blob(
+			[haxe.io.Bytes.ofString(content).getData()],
+			{type:'application/json'}
+		);
+		var url = js.html.URL.createObjectURL(blob);
+		a.href = url;
+		a.download = filename;
+		js.Browser.document.body.appendChild(a);
+		a.click();
+		js.Browser.window.setTimeout(function() {
+			js.Browser.document.body.removeChild(a);
+			js.html.URL.revokeObjectURL(url);
+		}, 0);
+		#end
 	}
 
 }

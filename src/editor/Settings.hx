@@ -32,7 +32,7 @@ class Settings extends FlowBase {
 			new New(this),
 			// new Save(this),
 			// new Load(this),
-			// new Open(this),
+			new Open(this),
 			new Export(this),
 		];
 		for (option in this.options) {

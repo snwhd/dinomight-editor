@@ -33,8 +33,9 @@ class Option extends FlowBase {
 		this.layout = Horizontal;
 		this.verticalAlign = Middle;
 		this.horizontalAlign = Middle;
+		this.padding = 12;
 
-		this.exactWidth = Std.int(this.flowParent.innerWidth * 0.5);
+		this.exactWidth = Std.int(this.flowParent.innerWidth * 0.75);
 		this.backgroundColor = Style.DeselectedColor;
 		var text = TextUtil.text(this.optionname, Medium);
 		text.textColor = Style.White;
