@@ -34,9 +34,9 @@ class Settings extends FlowBase {
 		this.options = [
 			new New(this),
 			// new Save(this),
-			// new Load(this),
 			new Open(this),
 			new Export(this),
+			// new Load(this),
 		];
 
 		var totalWidth = 0;

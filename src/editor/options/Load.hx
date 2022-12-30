@@ -9,7 +9,12 @@ class Load extends Option {
 		super('load', parent);
 	}
 
+	override function getIcon() {
+		return hxd.Res.img.icons.loadOption.toTile();
+	}
+
 	override function onClick() {
+		this.settings.client.displayAutosaves();
 	}
 
 }

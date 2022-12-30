@@ -6,6 +6,8 @@ import editor.util.FlowBase;
 
 class Client extends hxd.App {
 
+	private static inline var AUTOSAVE_LIMIT = 5;
+
 	private var flow : h2d.Flow;
 	private var toolbar : Toolbar;
 	private var canvas : Canvas;
@@ -15,7 +17,7 @@ class Client extends hxd.App {
 
 	private var canvasWidth = Canvas.DEFAULT_WIDTH;
 	private var canvasHeight = Canvas.DEFAULT_HEIGHT;
-	
+
 
 	static function main() {
 		new Client();
@@ -25,6 +27,12 @@ class Client extends hxd.App {
 		hxd.Res.initEmbed();
 		//TODO: hxd.Window.getInstance().addEventTarget(onEvent);
 		this.makeUI();
+		#if js
+		js.Browser.window.onbeforeunload = function (e) {
+			this.autosave();
+			return null;
+		};
+		#end
 	}
 
 	public function makeUI() {
@@ -95,6 +103,7 @@ class Client extends hxd.App {
 	}
 
 	public function newMap(width: Int, height: Int) {
+		this.autosave();
 		this.canvasWidth = width;
 		this.canvasHeight = height;
 		this.makeUI();
@@ -146,10 +155,69 @@ class Client extends hxd.App {
 		return content;
 	}
 
+	public function displayAutosaves() {
+	}
+
+	public function autosave() {
+	#if js
+		var storage = js.Browser.window.localStorage;
+		for (i in 1 ... AUTOSAVE_LIMIT) {
+			// from (limit - 1) to 1
+			var n = AUTOSAVE_LIMIT - i;
+
+			// add one so visuals is 1...limit inclusive
+			var name = 'autosave-${n}';
+			var existing = this.loadFromBrowser(name);
+			if (existing != null) {
+				// bump to higher save
+				var newname = 'autosave-${n + 1}';
+				var savedate = this.loadSaveDate(name);
+				storage.setItem(newname, existing);
+				saveSaveDate(newname, savedate);
+			}
+		}
+
+		saveToBrowser('autosave-1');
+	#end
+	}
+
+	public function loadFromBrowser(name: String): Null<String> {
+	#if js
+		var storage = js.Browser.window.localStorage;
+		return storage.getItem(name);
+	#end
+	}
+
+	public function loadSaveDate(name: String) : Null<String> {
+	#if js
+		return loadFromBrowser('${name}.__date__');
+	#end
+	}
+
+	public function saveToBrowser(name: String) {
+	#if js
+		// TODO: include date?
+		var storage = js.Browser.window.localStorage;
+		storage.setItem(name, this.save());
+		saveSaveDate(name);
+	#end
+	}
+
+
+	public function saveSaveDate(name: String, ?date: String) {
+	#if js
+		var storage = js.Browser.window.localStorage;
+		if (date == null) {
+			date =  Date.now().toString();
+		}
+		storage.setItem('${name}.__date__', date);
+	#end
+	}
+
 	private function alert(s: String) {
-		#if js
+	#if js
 		js.Browser.alert(s);
-		#end
+	#end
 	}
 
 	public function load(data: Dynamic) {
