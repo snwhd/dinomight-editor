@@ -32,6 +32,7 @@ class Pencil extends Tool {
 		if (this.isDown) {
 			canvas.put(x, y, this.tileType);
 		}
+		canvas.setShadow(x, y, this.tileType);
 	}
 
 	override function release(x, y, canvas) {

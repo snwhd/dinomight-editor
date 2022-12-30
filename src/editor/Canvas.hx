@@ -42,6 +42,8 @@ class Canvas extends FlowBase {
 
 	private var toolbar : Toolbar;
 
+	private var shadow : h2d.Flow;
+
 	public function new(
 		toolbar: Toolbar,
 		parent: FlowBase,
@@ -142,11 +144,18 @@ class Canvas extends FlowBase {
 		}
 	}
 
-	private function assertInBounds(x: Int, y: Int) {
+	private function isInBounds(x: Int, y: Int) {
 		if (x < 0 || x >= this.canvasWidth) {
-			throw 'oob';
+			return false;
 		}
 		if (y < 0 || y >= this.canvasHeight) {
+			return false;
+		}
+		return true;
+	}
+
+	private function assertInBounds(x: Int, y: Int) {
+		if (!this.isInBounds(x, y)) {
 			throw 'oob';
 		}
 	}
@@ -181,6 +190,34 @@ class Canvas extends FlowBase {
 			type: t,
 			bmp: bmp,
 		}
+	}
+
+	public function removeShadow() {
+		this.shadow.remove();
+		this.shadow = null;
+	}
+
+	public function setShadow(x: Int, y: Int, t: Null<TileType>) {
+		if (!this.isInBounds(x, y)) {
+			this.removeShadow();
+			return;
+		}
+
+		var tile = this.iconTiles[t][0];
+		if (this.shadow == null) {
+			this.shadow = new h2d.Flow(this.canvasBackground);
+			this.shadow.verticalAlign = Top;
+			this.shadow.horizontalAlign = Left;
+			this.shadow.minHeight = this.iconSize;
+			this.shadow.minWidth = this.iconSize;
+			this.shadow.overflow = Hidden;
+			this.shadow.backgroundTile = h2d.Tile.fromColor(0x268bd2);
+			this.shadow.alpha = 0.5;
+		}
+		this.shadow.removeChildren();
+		this.shadow.x = x * this.iconSize;
+		this.shadow.y = y * this.iconSize;
+		new h2d.Bitmap(tile, this.shadow);
 	}
 
 	private function relToTile(e: hxd.Event) : Null<h2d.col.IPoint> {
@@ -218,6 +255,8 @@ class Canvas extends FlowBase {
 		if (point != null) {
 			var tool = this.toolbar.currentTool;
 			tool.onCanvasMove(point.x, point.y, this);
+		} else {
+			this.removeShadow();
 		}
 	}
 
@@ -227,6 +266,7 @@ class Canvas extends FlowBase {
 			var tool = this.toolbar.currentTool;
 			tool.onCanvasOut(this);
 		}
+		this.removeShadow();
 	}
 
 	private function onOver(e: hxd.Event) {

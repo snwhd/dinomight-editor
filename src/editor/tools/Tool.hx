@@ -138,11 +138,11 @@ class Tool extends FlowBase {
 		y: Int,
 		canvas: Canvas
 	) : Void {
+		var position = new h2d.col.IPoint(x, y);
+		if (!this.deltaOnly || !position.equals(this.lastPosition)) {
+			this.moved(x, y, canvas);
+		}
 		if (this.isDown) {
-			var position = new h2d.col.IPoint(x, y);
-			if (!this.deltaOnly || !position.equals(this.lastPosition)) {
-				this.moved(x, y, canvas);
-			}
 			this.lastPosition = position;
 		}
 	}
