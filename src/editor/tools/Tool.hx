@@ -24,8 +24,7 @@ class Tool extends FlowBase {
 	public var toolname (default, null) : String;
 
 	// invalid initial position for canvas
-	private var lastPosition : h2d.col.IPoint = new h2d.col.IPoint(-1, -1);
-	private var deltaOnly = true;
+	private var lastDownPosition : h2d.col.IPoint = new h2d.col.IPoint(-1, -1);
 	private var isDown = false;
 
 	private var selectedPalette : FlowBase = null;
@@ -127,10 +126,9 @@ class Tool extends FlowBase {
 	) : Void {
 		this.isDown = true;
 		var position = new h2d.col.IPoint(x, y);
-		if (!this.deltaOnly || !position.equals(this.lastPosition)) {
-			this.push(x, y, canvas);
-		}
-		this.lastPosition = position;
+		var delta = !position.equals(this.lastDownPosition);
+		this.push(x, y, canvas, delta);
+		this.lastDownPosition = position;
 	}
 
 	public function onCanvasMove(
@@ -139,11 +137,10 @@ class Tool extends FlowBase {
 		canvas: Canvas
 	) : Void {
 		var position = new h2d.col.IPoint(x, y);
-		if (!this.deltaOnly || !position.equals(this.lastPosition)) {
-			this.moved(x, y, canvas);
-		}
+		var delta = !position.equals(this.lastDownPosition);
+		this.moved(x, y, canvas, delta);
 		if (this.isDown) {
-			this.lastPosition = position;
+			this.lastDownPosition = position;
 		}
 	}
 
@@ -154,16 +151,15 @@ class Tool extends FlowBase {
 	) : Void {
 		this.isDown = false;
 		var position = new h2d.col.IPoint(x, y);
-		if (!this.deltaOnly || !position.equals(this.lastPosition)) {
-			this.release(x, y, canvas);
-		}
-		this.lastPosition = position;
+		var delta = !position.equals(this.lastDownPosition);
+		this.release(x, y, canvas, delta);
+		this.lastDownPosition = position;
 	}
 
 	public function onCanvasOut(canvas: Canvas) {
 		this.isDown = false;
 		this.out(canvas);
-		this.lastPosition = new h2d.col.IPoint(-1, -1);
+		this.lastDownPosition = new h2d.col.IPoint(-1, -1);
 	}
 
 	public function onCanvasOver(
@@ -172,16 +168,16 @@ class Tool extends FlowBase {
 	) : Void {
 		this.isDown = isDown;
 		this.over(isDown, canvas);
-		// TODO: update lastPosition?
+		// TODO: update lastDownPosition?
 	}
 
-	private function push(x: Int, y: Int, canvas: Canvas) {
+	private function push(x: Int, y: Int, canvas: Canvas, delta: Bool) {
 	}
 
-	private function moved(x: Int, y: Int, canvas: Canvas) {
+	private function moved(x: Int, y: Int, canvas: Canvas, delta: Bool) {
 	}
 
-	private function release(x: Int, y: Int, canvas: Canvas) {
+	private function release(x: Int, y: Int, canvas: Canvas, delta: Bool) {
 	}
 
 	private function out(canvas: Canvas) {

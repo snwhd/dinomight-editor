@@ -11,17 +11,19 @@ class Eraser extends Tool {
 		return hxd.Res.img.icons.eraserTool.toTile();
 	}
 
-	override function push(x, y, canvas) {
-		canvas.put(x, y, null);
-	}
-
-	override function moved(x, y, canvas) {
-		if (this.isDown) {
+	override function push(x, y, canvas, delta) {
+		if (delta) {
 			canvas.put(x, y, null);
 		}
 	}
 
-	override function release(x, y, canvas) {
+	override function moved(x, y, canvas, delta) {
+		if (delta && this.isDown) {
+			canvas.put(x, y, null);
+		}
+	}
+
+	override function release(x, y, canvas, delta) {
 	}
 
 	override function out(canvas) {

@@ -7,13 +7,13 @@ class Fill extends Tool {
 		super(ToolType.Fill, parent);
 	}
 
-	override function push(x, y, canvas) {
+	override function push(x, y, canvas, delta) {
 	}
 
-	override function moved(x, y, canvas) {
+	override function moved(x, y, canvas, delta) {
 	}
 
-	override function release(x, y, canvas) {
+	override function release(x, y, canvas, delta) {
 	}
 
 	override function out(canvas) {
