@@ -14,12 +14,23 @@ class New extends Option {
 		super('new', parent);
 	}
 
+	override function getIcon() {
+		return hxd.Res.img.icons.newOption.toTile();
+	}
+
 	override function drawUI() {
 		super.drawUI();
 		var spacing = new FlowBase(this);
 		spacing.exactHeight = 1;
 		spacing.exactWidth = 20;
-		this.widthInput = TextUtil.input(Medium, this);
+
+		var sizeContainer = new FlowBase(this);
+		sizeContainer.layout = Horizontal;
+		sizeContainer.verticalAlign = Middle;
+		sizeContainer.horizontalAlign = Middle;
+		sizeContainer.backgroundColor = null;
+
+		this.widthInput = TextUtil.input(Medium, sizeContainer);
 		this.widthInput.text = '13';
 		this.widthInput.onChange = function () {
 			if (!this.widthInput.hasFocus() && this.widthInput.text == '') {
@@ -31,8 +42,8 @@ class New extends Option {
 				this.widthInput.text = '13';
 			}
 		}
-		var x = TextUtil.text('x', Small, this);
-		this.heightInput = TextUtil.input(Medium, this);
+		var x = TextUtil.text('x', Small, sizeContainer);
+		this.heightInput = TextUtil.input(Medium, sizeContainer);
 		this.heightInput.text = '13';
 		this.heightInput.onChange = function () {
 			if (!this.heightInput.hasFocus() && this.heightInput.text == '') {

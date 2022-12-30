@@ -22,11 +22,14 @@ class Settings extends FlowBase {
 			parent.innerHeight - parent.verticalSpacing
 		) / 2);
 
-		this.layout = Vertical;
+		this.layout = Horizontal;
 		this.verticalAlign = Top;
 		this.horizontalAlign = Middle;
 		this.verticalSpacing = Style.ToolbarPadding;
+		this.horizontalSpacing = Style.ToolbarPadding;
 		this.padding = Style.Padding;
+
+		this.multiline = true;
 
 		this.options = [
 			new New(this),

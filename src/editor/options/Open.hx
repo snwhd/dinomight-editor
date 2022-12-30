@@ -9,6 +9,10 @@ class Open extends Option {
 		super('open', parent);
 	}
 
+	override function getIcon() {
+		return hxd.Res.img.icons.openOption.toTile();
+	}
+
 	override function onClick() {
 		#if js
 		var i = js.Browser.document.createInputElement();
