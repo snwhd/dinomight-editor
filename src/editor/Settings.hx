@@ -38,9 +38,18 @@ class Settings extends FlowBase {
 			new Open(this),
 			new Export(this),
 		];
+
+		var totalWidth = 0;
 		for (option in this.options) {
 			option.drawUI();
+			totalWidth += option.outerWidth;
 		}
+
+		// TODO: this breaks if multiline
+		var spacing = Std.int(
+			(this.innerWidth - totalWidth) / this.options.length
+		);
+		this.horizontalSpacing = spacing;
 	}
 
 }
