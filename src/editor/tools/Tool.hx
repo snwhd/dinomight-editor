@@ -48,7 +48,7 @@ class Tool extends FlowBase {
 		this.exactWidth = Std.int(this.flowParent.innerWidth);
 		// this.exactHeight = this.exactWidth;
 		this.backgroundColor = Style.DeselectedColor;
-		var text = TextUtil.text(this.toolname, Large);
+		var text = TextUtil.text(this.toolname, Medium);
 		text.textColor = Style.White;
 		this.addChild(text);
 	}
