@@ -29,6 +29,7 @@ class New extends Option {
 		sizeContainer.verticalAlign = Middle;
 		sizeContainer.horizontalAlign = Middle;
 		sizeContainer.backgroundColor = null;
+		sizeContainer.horizontalSpacing = 4;
 
 		this.widthInput = TextUtil.input(Medium, sizeContainer);
 		this.widthInput.text = '13';

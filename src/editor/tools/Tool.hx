@@ -40,6 +40,7 @@ class Tool extends FlowBase {
 		this.interactive.onClick = function (e) {
 			this.onIconClick();
 		}
+		this.interactive.cursor = Button;
 	}
 
 	private function drawUI() {
@@ -108,6 +109,7 @@ class Tool extends FlowBase {
 				this.selectedPalette = flow;
 				this.selectedPalette.backgroundColor = Style.SelectedColor;
 			}
+			flow.interactive.cursor = Button;
 			var bmp = new h2d.Bitmap(tile, flow);
 			flows.push(flow);
 		}

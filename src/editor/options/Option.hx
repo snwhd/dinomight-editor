@@ -29,6 +29,7 @@ class Option extends FlowBase {
 		this.interactive.onOut = function (e) {
 			this.backgroundColor = null; // Style.DeselectedColor;
 		}
+		this.interactive.cursor = Button;
 	}
 
 	public function drawUI() {
