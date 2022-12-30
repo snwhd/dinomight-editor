@@ -22,7 +22,7 @@ class Toolbar extends FlowBase {
 		this.exactWidth = Style.ToolbarWidth;
 
 		this.tools = [
-			new Brush(this),
+			new Pencil(this),
 			// new Cursor(this),
 			// new Fill(this),
 			new Eraser(this),

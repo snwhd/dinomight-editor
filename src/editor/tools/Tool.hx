@@ -9,9 +9,11 @@ import editor.util.ImageUtil;
 
 class Tool extends FlowBase {
 
+	public static final TOOL_SIZE = 128;
+
 	public static final TOOL_NAMES : Map<ToolType, String> = [
 		Cursor    => "cursor",
-		Brush     => "brush",
+		Pencil    => "pencil",
 		Fill      => "fill",
 		Eraser    => "eraser",
 		BoxSelect => "select",
@@ -41,16 +43,20 @@ class Tool extends FlowBase {
 	}
 
 	private function drawUI() {
-		this.layout = Horizontal;
+		this.layout = Vertical;
 		this.verticalAlign = Middle;
 		this.horizontalAlign = Middle;
+		this.padding = 12;
 
 		this.exactWidth = Std.int(this.flowParent.innerWidth);
-		// this.exactHeight = this.exactWidth;
-		this.backgroundColor = Style.DeselectedColor;
-		var text = TextUtil.text(this.toolname, Medium);
-		text.textColor = Style.White;
-		this.addChild(text);
+
+		var tile= this.getIcon();
+		tile.scaleToSize(TOOL_SIZE, TOOL_SIZE);
+		new h2d.Bitmap(tile, this);
+	}
+
+	private function getIcon() : h2d.Tile {
+		throw 'must override';
 	}
 
 	public function select() {
@@ -58,7 +64,7 @@ class Tool extends FlowBase {
 	}
 
 	public function deselect() {
-		this.backgroundColor = Style.DeselectedColor;
+		this.backgroundColor = null;
 	}
 
 	public function getOptions() : Array<FlowBase> {

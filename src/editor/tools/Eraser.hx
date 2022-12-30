@@ -7,6 +7,10 @@ class Eraser extends Tool {
 		super(ToolType.Eraser, parent);
 	}
 
+	override function getIcon() {
+		return hxd.Res.img.icons.eraserTool.toTile();
+	}
+
 	override function push(x, y, canvas) {
 		canvas.put(x, y, null);
 	}

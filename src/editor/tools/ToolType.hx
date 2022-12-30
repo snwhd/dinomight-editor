@@ -4,7 +4,7 @@ package editor.tools;
 enum ToolType {
 
 	Cursor;
-	Brush;
+	Pencil;
 	Fill;
 	Eraser;
 	BoxSelect;

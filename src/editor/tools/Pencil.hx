@@ -3,13 +3,17 @@ package editor.tools;
 import editor.TileType;
 
 
-class Brush extends Tool {
+class Pencil extends Tool {
 
 	// TODO: load from palette
 	private var tileType : TileType = Tree;
 
 	public function new(?parent) {
-		super(ToolType.Brush, parent);
+		super(ToolType.Pencil, parent);
+	}
+
+	override function getIcon() {
+		return hxd.Res.img.icons.pencilTool.toTile();
 	}
 
 	override function getOptions() {
