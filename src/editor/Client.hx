@@ -72,6 +72,7 @@ class Client extends hxd.App {
 		this.toolOptions = new ToolOptions(this.toolbar.currentTool, sidebar);
 		this.toolbar.onToolChanged = function (tool) {
 			this.toolOptions.toolChanged(tool);
+			this.canvas.removeShadow();
 		};
 
 		this.settings = new Settings(this, sidebar);
@@ -330,11 +331,21 @@ class Client extends hxd.App {
 					this.toolbar.next();
 				}
 			case hxd.Key.NUMBER_1:
-				// TODO: tool.switch(1)
+				this.toolOptions.number(1);
 			case hxd.Key.NUMBER_2:
-				// TODO: tool.switch(2)
+				this.toolOptions.number(2);
 			case hxd.Key.NUMBER_3:
-				// TODO: tool.switch(3)
+				this.toolOptions.number(3);
+			case hxd.Key.NUMBER_4:
+				this.toolOptions.number(4);
+			case hxd.Key.NUMBER_5:
+				this.toolOptions.number(5);
+			case hxd.Key.NUMBER_6:
+				this.toolOptions.number(6);
+			case hxd.Key.NUMBER_7:
+				this.toolOptions.number(7);
+			case hxd.Key.NUMBER_8:
+				this.toolOptions.number(8);
 			case _:
 		}
 	}

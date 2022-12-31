@@ -13,6 +13,7 @@ class ToolOptions extends FlowBase {
 
 	private var tool : Tool;
 	private var previousPalette : Null<TileType>;
+	private var optionContainer : FlowBase;
 
 	public function new(tool: Tool, parent: FlowBase) {
 		super(parent);
@@ -56,6 +57,21 @@ class ToolOptions extends FlowBase {
 
 		for (option in tool.getOptions()) {
 			container.addChild(option);
+		}
+
+		this.optionContainer = container;
+	}
+
+
+	public function number(option: Int) {
+		// TODO: restrict to Pencil/Fill?
+		var children = this.optionContainer.children;
+		if (option < children.length) {
+			try {
+				var child : FlowBase = cast(children[option]);
+				child.interactive.onClick(null);
+			} catch (e) {
+			}
 		}
 	}
 
