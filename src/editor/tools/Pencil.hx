@@ -7,11 +7,55 @@ import editor.Canvas;
 class Pencil extends Tool {
 
 	public var tileType : TileType = Block;
-	private var lastPlace : Null<h2d.col.IPoint>;
 	private var erasing = false;
+
+	private var lastPlaced : Null<h2d.col.IPoint>;
 
 	public function new(?parent) {
 		super(ToolType.Pencil, parent);
+	}
+
+	private function reset(canvas: Canvas) {
+		this.lastPlaced = null;
+		this.erasing = false;
+		canvas.endGroup();
+	}
+
+	private function place(x: Int, y: Int, canvas: Canvas) {
+		if (this.erasing) {
+			canvas.put(x, y, null);
+		} else {
+			canvas.put(x, y, this.tileType);
+		}
+	}
+
+	private function interpolateLineTo(x1: Int, y1: Int, canvas: Canvas) {
+		var x0 = this.lastPlaced.x;
+		var y0 = this.lastPlaced.y;
+		var dx = x1 - x0;
+		var dy = y1 - y0;
+
+		var largestDelta = Std.int(Math.abs(dx));
+		if (Math.abs(dy) > largestDelta) {
+			largestDelta = Std.int(Math.abs(dy));
+		}
+		var xStep = dx / largestDelta;
+		var yStep = dy / largestDelta;
+
+		var x : Float = x0;
+		var y : Float = y0;
+		for (i in 0 ... largestDelta) {
+			x += xStep;
+			y += yStep;
+			this.place(Math.round(x), Math.round(y), canvas);
+		}
+
+		if (x != x1 || y != y1) {
+			trace('ERROR: xx != x / yy != y');
+			trace('x: $x; x1: $x1; y: $y; y1: $y1');
+			trace('last: ${this.lastPlaced}');
+			throw 'invalid pencil move';
+		}
 	}
 
 	override function getIcon() {
@@ -29,12 +73,8 @@ class Pencil extends Tool {
 	override function push(x, y, canvas: Canvas, delta) {
 		if (delta) {
 			canvas.beginGroup();
-			if (this.erasing) {
-				canvas.put(x, y, null);
-			} else {
-				canvas.put(x, y, this.tileType);
-			}
-			this.lastPlace = new h2d.col.IPoint(x, y);
+			this.place(x, y, canvas);
+			this.lastPlaced = new h2d.col.IPoint(x, y);
 		}
 	}
 
@@ -45,54 +85,22 @@ class Pencil extends Tool {
 
 	override function moved(x, y, canvas: Canvas, delta) {
 		if (delta && this.isDown) {
-			if (this.lastPlace != null) {
-				var dx = x - this.lastPlace.x;
-				var dy = y - this.lastPlace.y;
-				var step = Std.int(Math.abs(dx));
-				if (Math.abs(dy) > step) {
-					step = Std.int(Math.abs(dy));
-				}
-				var xStep = dx / step;
-				var yStep = dy / step;
-
-				var xx : Float = this.lastPlace.x;
-				var yy : Float = this.lastPlace.y;
-				trace('step by $xStep $yStep from $xx $yy to $x $y');
-				for (i in 1 ... step + 1) {
-					if (this.erasing) {
-						canvas.put(Math.round(xx), Math.round(yy), null);
-					} else {
-						canvas.put(Math.round(xx), Math.round(yy), this.tileType);
-					}
-					xx += xStep;
-					yy += yStep;
-				}
-				if (xx != x || yy != y) {
-					trace('ERROR: xx != x / yy != y');
-					trace('xx: $xx; x: $x; yy: $yy; y: $y');
-					trace('last: ${this.lastPlace}');
-					throw 'invalid pencil move';
-				}
-			} else if (this.erasing) {
-				canvas.put(x, y, null);
+			if (this.lastPlaced != null) {
+				this.interpolateLineTo(x, y, canvas);
 			} else {
-				canvas.put(x, y, this.tileType);
+				this.place(x, y, canvas);
 			}
-			this.lastPlace = new h2d.col.IPoint(x, y);
+			this.lastPlaced = new h2d.col.IPoint(x, y);
 		}
 		canvas.setShadow(x, y, this.tileType);
 	}
 
 	override function release(x, y, canvas: Canvas, delta) {
-		this.lastPlace = null;
-		this.erasing = false;
-		canvas.endGroup();
+		this.reset(canvas);
 	}
 
 	override function out(canvas: Canvas) {
-		this.lastPlace = null;
-		this.erasing = false;
-		canvas.endGroup();
+		this.reset(canvas);
 	}
 
 	override function over(isDown, canvas: Canvas) {
