@@ -313,6 +313,7 @@ class Client extends hxd.App {
 	private function onEvent(e: hxd.Event) {
 		switch (e.kind) {
 			case EKeyDown:
+				this.keyDown(e.keyCode);
 			case EKeyUp:
 				this.keyUp(e.keyCode);
 			case _:
@@ -320,6 +321,9 @@ class Client extends hxd.App {
 	}
 
 	private function keyUp(k: Int) {
+	}
+
+	private function keyDown(k: Int) {
 		var shift = hxd.Key.isDown(hxd.Key.SHIFT);
 		var ctrl  = hxd.Key.isDown(hxd.Key.CTRL);
 
