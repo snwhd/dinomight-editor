@@ -82,7 +82,7 @@ class Fill extends Tool {
 					if (
 						!visited.exists(near) &&
 						!todo.contains(near)  &&
-						c.isInBounds(near.x, near.y)
+						c.isInBounds(near.x, near.y, true)
 					) {
 						todo.push(near);
 					}
