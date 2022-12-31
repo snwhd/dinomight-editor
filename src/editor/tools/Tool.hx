@@ -182,11 +182,11 @@ class Tool extends FlowBase {
 	}
 
 	public function onCanvasOver(
-		isDown: Bool,
+		leftDown: Bool,
+		rightDown: Bool,
 		canvas: Canvas
 	) : Void {
-		this.isDown = isDown;
-		this.over(isDown, canvas);
+		this.over(leftDown, rightDown, canvas);
 		// TODO: update lastDownPosition?
 	}
 
@@ -194,6 +194,7 @@ class Tool extends FlowBase {
 	}
 
 	private function rightPush(x: Int, y: Int, canvas: Canvas, delta: Bool) {
+		this.push(x, y, canvas, delta);
 	}
 
 	private function moved(x: Int, y: Int, canvas: Canvas, delta: Bool) {
@@ -205,7 +206,8 @@ class Tool extends FlowBase {
 	private function out(canvas: Canvas) {
 	}
 
-	private function over(isDown: Bool, canvas: Canvas) {
+	private function over(leftDown: Bool, rightDown: Bool, canvas: Canvas) {
+		this.isDown = leftDown || rightDown;
 	}
 
 	public dynamic function onIconClick() {

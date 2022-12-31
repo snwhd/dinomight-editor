@@ -103,7 +103,17 @@ class Pencil extends Tool {
 		this.reset(canvas);
 	}
 
-	override function over(isDown, canvas: Canvas) {
+	override function over(leftDown, rightDown, canvas: Canvas) {
+		// This should preserve left click or right clicking going in
+		// and out of the boundaries of the canvas.
+		//
+		// In case of both right and left clicking, defaults to left
+		// click behavior. Not sure what is expected here (TODO).
+		this.lastPlaced = null;
+		super.over(leftDown, rightDown, canvas);
+		if (!leftDown && rightDown) {
+			this.erasing = true;
+		}
 	}
 
 }

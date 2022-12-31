@@ -40,7 +40,7 @@ class Fill extends Tool {
 	override function out(canvas: Canvas) {
 	}
 
-	override function over(isDown, canvas: Canvas) {
+	override function over(leftDown, rightDown, canvas: Canvas) {
 	}
 
 	private function doFill(
