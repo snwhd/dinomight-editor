@@ -332,16 +332,20 @@ class Canvas extends FlowBase {
 	}
 
 	public function beginGroup() {
-		this.grouping = true;
-		this.history.push([]);
-		this.trimHistory();
+		if (!this.grouping) {
+			this.grouping = true;
+			this.history.push([]);
+			this.trimHistory();
+		}
 	}
 
 	public function endGroup() {
-		this.grouping = false;
-		var group = this.history.pop();
-		if (group.length > 0) {
-			this.history.push(group);
+		if (this.grouping) {
+			this.grouping = false;
+			var group = this.history.pop();
+			if (group.length > 0) {
+				this.history.push(group);
+			}
 		}
 	}
 
