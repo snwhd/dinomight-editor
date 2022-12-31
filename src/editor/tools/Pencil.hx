@@ -27,8 +27,9 @@ class Pencil extends Tool {
 	}
 
 	override function push(x, y, canvas: Canvas, delta) {
+		// TODO: should this be in the if?
+		canvas.beginGroup();
 		if (delta) {
-			canvas.beginGroup();
 			if (this.lastPlace != null) {
 				var dx = x - this.lastPlace.x;
 				var dy = y - this.lastPlace.y;

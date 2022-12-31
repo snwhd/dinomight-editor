@@ -196,18 +196,17 @@ class Canvas extends FlowBase {
 
 		if (t == null) {
 			this.tiles[index] = null;
-			return;
-		}
+		} else {
+			var tiles = this.iconTiles[t];
+			var choice = this.rand.random(tiles.length);
 
-		var tiles = this.iconTiles[t];
-		var choice = this.rand.random(tiles.length);
-
-		var bmp = new h2d.Bitmap(tiles[choice], this.canvasBackground);
-		bmp.x = x * this.iconSize;
-		bmp.y = y * this.iconSize;
-		this.tiles[index] = {
-			type: t,
-			bmp: bmp,
+			var bmp = new h2d.Bitmap(tiles[choice], this.canvasBackground);
+			bmp.x = x * this.iconSize;
+			bmp.y = y * this.iconSize;
+			this.tiles[index] = {
+				type: t,
+				bmp: bmp,
+			}
 		}
 
 		if (!undo) {
