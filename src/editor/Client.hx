@@ -7,6 +7,7 @@ import editor.util.FlowBase;
 class Client extends hxd.App {
 
 	private static inline var AUTOSAVE_LIMIT = 5;
+	private static inline var CLEAR_MESSAGE = 'Start a new map?\nThe current map will be lost.';
 
 	private var flow : h2d.Flow;
 	private var toolbar : Toolbar;
@@ -25,7 +26,7 @@ class Client extends hxd.App {
 
 	override function init() {
 		hxd.Res.initEmbed();
-		//TODO: hxd.Window.getInstance().addEventTarget(onEvent);
+		hxd.Window.getInstance().addEventTarget(onEvent);
 		this.makeUI();
 		#if js
 		js.Browser.window.onbeforeunload = function (e) {
@@ -103,7 +104,32 @@ class Client extends hxd.App {
 	}
 
 	public function newMap(width: Int, height: Int) {
-		this.autosave();
+		var isBlank = true;
+		for (i => tile in this.canvas.tiles.keyValueIterator()) {
+			// ignore outer trees
+			if (
+				Std.int(i / this.canvas.canvasWidth) == 0 ||
+				Std.int(i / this.canvas.canvasWidth) == this.canvas.canvasHeight - 1 ||
+				i % this.canvas.canvasWidth == 0 ||
+				i % this.canvas.canvasWidth == this.canvas.canvasWidth - 1
+			) {
+				continue;
+			}
+			if (tile != null) {
+				isBlank = false;
+				break;
+			}
+		}
+
+		if (!isBlank) {
+			#if js
+				var confirmed = js.Browser.window.confirm(CLEAR_MESSAGE);
+				if (!confirmed) {
+					return;
+				}
+			#end
+			this.autosave();
+		}
 		this.canvasWidth = width;
 		this.canvasHeight = height;
 		this.makeUI();
@@ -281,6 +307,36 @@ class Client extends hxd.App {
 			});
 		}
 
+	}
+
+	private function onEvent(e: hxd.Event) {
+		switch (e.kind) {
+			case EKeyDown:
+			case EKeyUp:
+				this.keyUp(e.keyCode);
+			case _:
+		}
+	}
+
+	private function keyUp(k: Int) {
+		var shift = hxd.Key.isDown(hxd.Key.SHIFT);
+		var ctrl  = hxd.Key.isDown(hxd.Key.CTRL);
+
+		switch (k) {
+			case hxd.Key.TAB:
+				if (shift) {
+					this.toolbar.prev();
+				} else {
+					this.toolbar.next();
+				}
+			case hxd.Key.NUMBER_1:
+				// TODO: tool.switch(1)
+			case hxd.Key.NUMBER_2:
+				// TODO: tool.switch(2)
+			case hxd.Key.NUMBER_3:
+				// TODO: tool.switch(3)
+			case _:
+		}
 	}
 
 }

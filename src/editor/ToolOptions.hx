@@ -1,13 +1,18 @@
 package editor;
 
+import editor.TileType;
+
 import editor.util.FlowBase;
 import editor.util.TextUtil;
 import editor.tools.Tool;
+import editor.tools.Pencil;
+import editor.tools.Fill;
 
 
 class ToolOptions extends FlowBase {
 
 	private var tool : Tool;
+	private var previousPalette : Null<TileType>;
 
 	public function new(tool: Tool, parent: FlowBase) {
 		super(parent);
@@ -54,8 +59,35 @@ class ToolOptions extends FlowBase {
 		}
 	}
 
+	private function preservePalette() {
+		// TODO: just move tileType into Tool?
+		switch (Type.getClass(this.tool)) {
+			case Pencil:
+				var p : Pencil = cast(this.tool);
+				this.previousPalette = p.tileType;
+			case Fill:
+				var f : Fill = cast(this.tool);
+				this.previousPalette = f.tileType;
+			case _: // do not preserve
+		}
+	}
+
+	private function restorePalette() {
+		if (this.previousPalette != null) switch (Type.getClass(this.tool)) {
+			case Pencil:
+				var p : Pencil = cast(this.tool);
+				p.tileType = this.previousPalette;
+			case Fill:
+				var f : Fill = cast(this.tool);
+				f.tileType = this.previousPalette;
+			case _: // do not restore 
+		}
+	}
+
 	public function toolChanged(tool: Tool) {
+		this.preservePalette();
 		this.tool = tool;
+		this.restorePalette();
 		this.drawOptions();
 	}
 

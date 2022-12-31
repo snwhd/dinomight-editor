@@ -71,7 +71,10 @@ class Tool extends FlowBase {
 		return [];
 	}
 
-	public function paletteOptions() : Array<FlowBase> {
+	public function paletteOptions(?selected: TileType) : Array<FlowBase> {
+		if (selected == null) {
+			selected = Block;
+		}
 		var width = Style.ToolbarWidth - (
 			(Style.ToolbarCols + 1) * Style.ToolbarPadding
 		);
@@ -110,9 +113,13 @@ class Tool extends FlowBase {
 			}
 			flow.interactive.cursor = Button;
 			var bmp = new h2d.Bitmap(tile, flow);
+			if (type == selected) {
+				// highlight selected option to start
+				flow.interactive.onClick(null);
+			}
 			flows.push(flow);
 		}
-		flows[0].interactive.onClick(null);
+		// flows[0].interactive.onClick(null);
 		return flows;
 	}
 

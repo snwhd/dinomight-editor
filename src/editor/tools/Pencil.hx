@@ -5,8 +5,7 @@ import editor.TileType;
 
 class Pencil extends Tool {
 
-	// TODO: load from palette
-	private var tileType : TileType = Tree;
+	public var tileType : TileType = Block;
 
 	public function new(?parent) {
 		super(ToolType.Pencil, parent);
@@ -17,7 +16,7 @@ class Pencil extends Tool {
 	}
 
 	override function getOptions() {
-		return this.paletteOptions();
+		return this.paletteOptions(tileType);
 	}
 
 	override function paletteSelect(tile) {

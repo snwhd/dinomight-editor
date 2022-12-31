@@ -144,7 +144,7 @@ class Canvas extends FlowBase {
 		}
 	}
 
-	private function isInBounds(x: Int, y: Int) {
+	public function isInBounds(x: Int, y: Int) {
 		if (x < 0 || x >= this.canvasWidth) {
 			return false;
 		}
