@@ -8,6 +8,7 @@ class Pencil extends Tool {
 
 	public var tileType : TileType = Block;
 	private var lastPlace : Null<h2d.col.IPoint>;
+	private var erasing = false;
 
 	public function new(?parent) {
 		super(ToolType.Pencil, parent);
@@ -41,7 +42,11 @@ class Pencil extends Tool {
 				var xx = this.lastPlace.x;
 				var yy = this.lastPlace.y;
 				for (i in 1 ... step + 1) {
-					canvas.put(xx, yy, this.tileType);
+					if (this.erasing) {
+						canvas.put(xx, yy, null);
+					} else {
+						canvas.put(xx, yy, this.tileType);
+					}
 					xx += xStep;
 					yy += yStep;
 				}
@@ -52,15 +57,28 @@ class Pencil extends Tool {
 					throw 'invalid pencil move';
 				}
 			} else {
-				canvas.put(x, y, this.tileType);
+				if (this.erasing) {
+					canvas.put(x, y, null);
+				} else {
+					canvas.put(x, y, this.tileType);
+				}
 			}
 			this.lastPlace = new h2d.col.IPoint(x, y);
 		}
 	}
 
+	override function rightPush(x, y, canvas: Canvas, delta) {
+		this.erasing = true;
+		this.push(x, y, canvas, delta);
+	}
+
 	override function moved(x, y, canvas: Canvas, delta) {
 		if (delta && this.isDown) {
-			canvas.put(x, y, this.tileType);
+			if (this.erasing) {
+				canvas.put(x, y, null);
+			} else {
+				canvas.put(x, y, this.tileType);
+			}
 			this.lastPlace = new h2d.col.IPoint(x, y);
 		}
 		canvas.setShadow(x, y, this.tileType);
@@ -68,11 +86,13 @@ class Pencil extends Tool {
 
 	override function release(x, y, canvas: Canvas, delta) {
 		this.lastPlace = null;
+		this.erasing = false;
 		canvas.endGroup();
 	}
 
 	override function out(canvas: Canvas) {
 		this.lastPlace = null;
+		this.erasing = false;
 		canvas.endGroup();
 	}
 

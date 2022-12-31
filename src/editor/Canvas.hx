@@ -83,6 +83,7 @@ class Canvas extends FlowBase {
 		this.exactWidth = maxIconSize * this.canvasWidth;
 
 		this.enableInteractive = true;
+		this.interactive.enableRightButton = true;
 		this.interactive.onPush = this.onPush;
 		this.interactive.onRelease = this.onRelease;
 		this.interactive.onMove = this.onMove;
@@ -261,7 +262,11 @@ class Canvas extends FlowBase {
 		var point = this.relToTile(e);
 		if (point != null) {
 			var tool = this.toolbar.currentTool;
-			tool.onCanvasPush(point.x, point.y, this);
+			if (e.button == 0) {
+				tool.onCanvasPush(point.x, point.y, this);
+			} else if (e.button == 1) {
+				tool.onCanvasRightPush(point.x, point.y, this);
+			}
 		}
 	}
 

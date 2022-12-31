@@ -138,6 +138,18 @@ class Tool extends FlowBase {
 		this.lastDownPosition = position;
 	}
 
+	public function onCanvasRightPush(
+		x: Int,
+		y: Int,
+		canvas: Canvas
+	) : Void {
+		this.isDown = true;
+		var position = new h2d.col.IPoint(x, y);
+		var delta = !position.equals(this.lastDownPosition);
+		this.rightPush(x, y, canvas, delta);
+		this.lastDownPosition = position;
+	}
+
 	public function onCanvasMove(
 		x: Int,
 		y: Int,
@@ -179,6 +191,9 @@ class Tool extends FlowBase {
 	}
 
 	private function push(x: Int, y: Int, canvas: Canvas, delta: Bool) {
+	}
+
+	private function rightPush(x: Int, y: Int, canvas: Canvas, delta: Bool) {
 	}
 
 	private function moved(x: Int, y: Int, canvas: Canvas, delta: Bool) {
