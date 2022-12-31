@@ -346,6 +346,18 @@ class Client extends hxd.App {
 				this.toolOptions.number(7);
 			case hxd.Key.NUMBER_8:
 				this.toolOptions.number(8);
+			case hxd.Key.Z:
+				if (ctrl) {
+					if (shift) {
+						this.canvas.redo();
+					} else {
+						this.canvas.undo();
+					}
+				}
+			case hxd.Key.Y:
+				if (ctrl) {
+					this.canvas.redo();
+				}
 			case _:
 		}
 	}

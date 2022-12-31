@@ -13,6 +13,11 @@ typedef CanvasTile = {
 }
 
 
+enum Action {
+	Put(x: Int, y: Int, t: Null<TileType>, p: Null<TileType>);
+}
+
+
 class Canvas extends FlowBase {
 
 	public static inline var MIN_WIDTH = 13;
@@ -20,6 +25,11 @@ class Canvas extends FlowBase {
 	public static inline var MAX_WIDTH = 100;
 	public static inline var MAX_HEIGHT = 100;
 	public static inline var MAX_TILES = 20000;
+
+	public static inline var HISTORY_LENGTH = 100;
+	private var history : Array<Array<Action>> = [];
+	private var future : Array<Array<Action>> = [];
+	private var grouping = false;
 
 	private static inline var TILE_SIZE = 250;
 	private static final TILE_COLORS = [
@@ -86,12 +96,12 @@ class Canvas extends FlowBase {
 
 		this.rand = Random.createSafeRand();
 		for (x in 0 ... this.canvasWidth) {
-			this.put(x, 0, Tree);
-			this.put(x, this.canvasHeight - 1, Tree);
+			this.put(x, 0, Tree, true);
+			this.put(x, this.canvasHeight - 1, Tree, true);
 		}
 		for (y in 0 ... this.canvasHeight) {
-			this.put(0, y, Tree);
-			this.put(this.canvasWidth - 1, y, Tree);
+			this.put(0, y, Tree, true);
+			this.put(this.canvasWidth - 1, y, Tree, true);
 		}
 	}
 
@@ -166,7 +176,7 @@ class Canvas extends FlowBase {
 		return this.tiles[index];
 	}
 
-	public function put(x: Int, y: Int, t: Null<TileType>) {
+	public function put(x: Int, y: Int, t: Null<TileType>, ?undo=false) {
 		this.assertInBounds(x, y);
 		var index = y * this.canvasWidth + x;
 
@@ -189,6 +199,11 @@ class Canvas extends FlowBase {
 		this.tiles[index] = {
 			type: t,
 			bmp: bmp,
+		}
+
+		if (!undo) {
+			var prev = if (existing == null) null else existing.type;
+			appendAction(Put(x, y, t, prev));
 		}
 	}
 
@@ -278,5 +293,65 @@ class Canvas extends FlowBase {
 		}
 	}
 
+	//
+	// undo/redo
+	//
+
+	public function undo() {
+		if (this.history.length > 0) {
+			var actions = this.history.pop();
+			this.future.push(actions);
+			for (action in actions) {
+				switch (action) {
+					case Put(x, y, t, p):
+						this.put(x, y, p, true);
+				}
+			}
+		}
+	}
+
+	public function redo() {
+		if (this.future.length > 0) {
+			var actions = this.future.pop();
+			this.history.push(actions);
+			for (action in actions) {
+				switch (action) {
+					case Put(x, y, t, p):
+						this.put(x, y, t, true);
+				}
+			}
+		}
+	}
+
+	public function beginGroup() {
+		this.grouping = true;
+		this.history.push([]);
+		this.trimHistory();
+	}
+
+	public function endGroup() {
+		this.grouping = false;
+		var group = this.history.pop();
+		if (group.length > 0) {
+			this.history.push(group);
+		}
+	}
+
+	private function appendAction(action: Action) {
+		this.future = [];
+		if (this.grouping) {
+			var group = this.history[this.history.length - 1];
+			group.push(action);
+		} else {
+			this.history.push([action]);
+		}
+		this.trimHistory();
+	}
+
+	private function trimHistory() {
+		if (this.history.length > HISTORY_LENGTH) {
+			this.history.shift();
+		}
+	}
 
 }

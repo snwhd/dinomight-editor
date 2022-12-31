@@ -1,6 +1,7 @@
 package editor.tools;
 
 import editor.TileType;
+import editor.Canvas;
 
 
 class Pencil extends Tool {
@@ -23,26 +24,26 @@ class Pencil extends Tool {
 		this.tileType = tile;
 	}
 
-	override function push(x, y, canvas, delta) {
+	override function push(x, y, canvas: Canvas, delta) {
 		if (delta) {
 			canvas.put(x, y, this.tileType);
 		}
 	}
 
-	override function moved(x, y, canvas, delta) {
+	override function moved(x, y, canvas: Canvas, delta) {
 		if (delta && this.isDown) {
 			canvas.put(x, y, this.tileType);
 		}
 		canvas.setShadow(x, y, this.tileType);
 	}
 
-	override function release(x, y, canvas, delta) {
+	override function release(x, y, canvas: Canvas, delta) {
 	}
 
-	override function out(canvas) {
+	override function out(canvas: Canvas) {
 	}
 
-	override function over(isDown, canvas) {
+	override function over(isDown, canvas: Canvas) {
 	}
 
 }

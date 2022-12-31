@@ -1,5 +1,6 @@
 package editor.tools;
 
+import editor.Canvas;
 
 class Eraser extends Tool {
 
@@ -11,25 +12,25 @@ class Eraser extends Tool {
 		return hxd.Res.img.icons.eraserTool.toTile();
 	}
 
-	override function push(x, y, canvas, delta) {
+	override function push(x, y, canvas: Canvas, delta) {
 		if (delta) {
 			canvas.put(x, y, null);
 		}
 	}
 
-	override function moved(x, y, canvas, delta) {
+	override function moved(x, y, canvas: Canvas, delta) {
 		if (delta && this.isDown) {
 			canvas.put(x, y, null);
 		}
 	}
 
-	override function release(x, y, canvas, delta) {
+	override function release(x, y, canvas: Canvas, delta) {
 	}
 
-	override function out(canvas) {
+	override function out(canvas: Canvas) {
 	}
 
-	override function over(isDown, canvas) {
+	override function over(isDown, canvas: Canvas) {
 	}
 
 

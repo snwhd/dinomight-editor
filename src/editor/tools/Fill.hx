@@ -1,5 +1,7 @@
 package editor.tools;
 
+import editor.Canvas;
+
 
 class Fill extends Tool {
 
@@ -22,21 +24,23 @@ class Fill extends Tool {
 		this.tileType = tile;
 	}
 
-	override function push(x, y, canvas, delta) {
+	override function push(x, y, canvas: Canvas, delta) {
 	}
 
-	override function moved(x, y, canvas, delta) {
+	override function moved(x, y, canvas: Canvas, delta) {
 			canvas.setShadow(x, y, this.tileType);
 	}
 
-	override function release(x, y, canvas, delta) {
+	override function release(x, y, canvas: Canvas, delta) {
+		canvas.beginGroup();
 		this.doFill(x, y, this.tileType, canvas);
+		canvas.endGroup();
 	}
 
-	override function out(canvas) {
+	override function out(canvas: Canvas) {
 	}
 
-	override function over(isDown, canvas) {
+	override function over(isDown, canvas: Canvas) {
 	}
 
 	private function doFill(

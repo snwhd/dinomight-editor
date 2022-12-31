@@ -1,5 +1,7 @@
 package editor.tools;
 
+import editor.Canvas;
+
 
 class BoxSelect extends Tool {
 
@@ -7,19 +9,19 @@ class BoxSelect extends Tool {
 		super(ToolType.BoxSelect, parent);
 	}
 
-	override function push(x, y, canvas, delta) {
+	override function push(x, y, canvas: Canvas, delta) {
 	}
 
-	override function moved(x, y, canvas, delta) {
+	override function moved(x, y, canvas: Canvas, delta) {
 	}
 
-	override function release(x, y, canvas, delta) {
+	override function release(x, y, canvas: Canvas, delta) {
 	}
 
-	override function out(canvas) {
+	override function out(canvas: Canvas) {
 	}
 
-	override function over(isDown, canvas) {
+	override function over(isDown, canvas: Canvas) {
 	}
 
 
