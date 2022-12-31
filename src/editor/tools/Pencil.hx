@@ -27,42 +27,12 @@ class Pencil extends Tool {
 	}
 
 	override function push(x, y, canvas: Canvas, delta) {
-		// TODO: should this be in the if?
-		canvas.beginGroup();
 		if (delta) {
-			if (this.lastPlace != null) {
-				var dx = x - this.lastPlace.x;
-				var dy = y - this.lastPlace.y;
-				var step = Std.int(Math.abs(dx));
-				if (Math.abs(dy) > step) {
-					step = Std.int(Math.abs(dy));
-				}
-				var xStep = Std.int(dx / step);
-				var yStep = Std.int(dy / step);
-
-				var xx = this.lastPlace.x;
-				var yy = this.lastPlace.y;
-				for (i in 1 ... step + 1) {
-					if (this.erasing) {
-						canvas.put(xx, yy, null);
-					} else {
-						canvas.put(xx, yy, this.tileType);
-					}
-					xx += xStep;
-					yy += yStep;
-				}
-				if (xx != x || yy != y) {
-					trace('ERROR: xx != x / yy != y');
-					trace('xx: $xx; x: $x; yy: $yy; y: $y');
-					trace('last: ${this.lastPlace}');
-					throw 'invalid pencil move';
-				}
+			canvas.beginGroup();
+			if (this.erasing) {
+				canvas.put(x, y, null);
 			} else {
-				if (this.erasing) {
-					canvas.put(x, y, null);
-				} else {
-					canvas.put(x, y, this.tileType);
-				}
+				canvas.put(x, y, this.tileType);
 			}
 			this.lastPlace = new h2d.col.IPoint(x, y);
 		}
@@ -75,7 +45,35 @@ class Pencil extends Tool {
 
 	override function moved(x, y, canvas: Canvas, delta) {
 		if (delta && this.isDown) {
-			if (this.erasing) {
+			if (this.lastPlace != null) {
+				var dx = x - this.lastPlace.x;
+				var dy = y - this.lastPlace.y;
+				var step = Std.int(Math.abs(dx));
+				if (Math.abs(dy) > step) {
+					step = Std.int(Math.abs(dy));
+				}
+				var xStep = dx / step;
+				var yStep = dy / step;
+
+				var xx : Float = this.lastPlace.x;
+				var yy : Float = this.lastPlace.y;
+				trace('step by $xStep $yStep from $xx $yy to $x $y');
+				for (i in 1 ... step + 1) {
+					if (this.erasing) {
+						canvas.put(Math.round(xx), Math.round(yy), null);
+					} else {
+						canvas.put(Math.round(xx), Math.round(yy), this.tileType);
+					}
+					xx += xStep;
+					yy += yStep;
+				}
+				if (xx != x || yy != y) {
+					trace('ERROR: xx != x / yy != y');
+					trace('xx: $xx; x: $x; yy: $yy; y: $y');
+					trace('last: ${this.lastPlace}');
+					throw 'invalid pencil move';
+				}
+			} else if (this.erasing) {
 				canvas.put(x, y, null);
 			} else {
 				canvas.put(x, y, this.tileType);
