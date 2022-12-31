@@ -22,8 +22,6 @@ class Canvas extends FlowBase {
 
 	public static inline var MIN_WIDTH = 13;
 	public static inline var MIN_HEIGHT = 13;
-	public static inline var MAX_WIDTH = 100;
-	public static inline var MAX_HEIGHT = 100;
 	public static inline var MAX_TILES = 20000;
 
 	public static inline var HISTORY_LENGTH = 100;
@@ -149,7 +147,7 @@ class Canvas extends FlowBase {
 		if (width < MIN_WIDTH || height < MIN_HEIGHT) {
 			throw 'map too small';
 		}
-		if (width > MAX_WIDTH || height > MAX_HEIGHT || width * height > MAX_TILES) {
+		if (width * height > MAX_TILES) {
 			throw 'map too big';
 		}
 	}

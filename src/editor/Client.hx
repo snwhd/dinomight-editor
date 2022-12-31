@@ -259,8 +259,6 @@ class Client extends hxd.App {
 			width == null ||
 			height < Canvas.MIN_HEIGHT ||
 			width < Canvas.MIN_WIDTH ||
-			height > Canvas.MAX_HEIGHT ||
-			width > Canvas.MAX_WIDTH ||
 			height * width > Canvas.MAX_TILES
 		) {
 			this.alert('invalid width/height');
