@@ -296,11 +296,11 @@ class Canvas extends FlowBase {
 
 	private function onOver(e: hxd.Event) {
 		var point = this.relToTile(e);
-		if (point != null) {
-			var tool = this.toolbar.currentTool;
-			var isDown = false; // TODO
-			tool.onCanvasOver(isDown, this);
-		}
+		// if (point != null) {
+		var tool = this.toolbar.currentTool;
+		var isDown = false; // TODO
+		tool.onCanvasOver(isDown, this);
+		// }
 	}
 
 	//
