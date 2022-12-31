@@ -1,0 +1,8 @@
+select, wand, drag, cut, paste
+modal for settings and stuff
+ - save: local storage, filesystem
+ - load: local storage, filesystem
+ - new map: dimensions
+sample maps
+generate thumnail?
+auto upload to foony!?
