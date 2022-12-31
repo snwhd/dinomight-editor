@@ -31,7 +31,8 @@ class Client extends hxd.App {
 		#if js
 		js.Browser.window.onbeforeunload = function (e) {
 			this.autosave();
-			return null;
+			// TODO: remove after implementing auto load
+			return 'Be sure to save before you exit!';
 		};
 		#end
 	}
