@@ -10,16 +10,32 @@ class Toolbar extends FlowBase {
 	private var currentIndex = 0;
 	public var currentTool (get, never) : Tool;
 
-	public function new(?parent) {
+	public function new(parent: h2d.Flow) {
 		super(parent);
-		this.layout = Vertical;
-		this.verticalSpacing = Style.MenuSpacing;
-		this.horizontalAlign = Middle;
-		this.verticalAlign = Top;
-		this.padding = Style.Padding;
 
-		this.exactHeight = this.flowParent.innerHeight;
-		this.exactWidth = Style.ToolbarWidth;
+		switch (parent.layout) {
+			case Vertical:
+				// mobile
+				this.layout = Horizontal;
+				this.horizontalSpacing = Style.MenuSpacing;
+				this.verticalAlign = Middle;
+				this.horizontalAlign = Left;
+
+				this.exactWidth = this.flowParent.innerWidth;
+				this.exactHeight = Style.ToolbarWidth;
+			case Horizontal:
+				this.layout = Vertical;
+				this.verticalSpacing = Style.MenuSpacing;
+				this.horizontalAlign = Middle;
+				this.verticalAlign = Top;
+
+				this.exactHeight = this.flowParent.innerHeight;
+				this.exactWidth = Style.ToolbarWidth;
+			case layout:
+				throw 'invalid layout: $layout';
+		}
+
+		this.padding = Style.Padding;
 
 		this.tools = [
 			new Pencil(this),

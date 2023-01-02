@@ -17,17 +17,36 @@ class Settings extends FlowBase {
 	public function new(client: Client, ?parent) {
 		super(parent);
 		this.client = client;
-		this.exactWidth = parent.innerWidth;
-		this.exactHeight = Std.int((
-			parent.innerHeight - parent.verticalSpacing
-		) / 2);
 
-		this.layout = Horizontal;
-		this.verticalAlign = Top;
-		this.horizontalAlign = Middle;
-		this.verticalSpacing = Style.ToolbarPadding;
-		this.horizontalSpacing = Style.ToolbarPadding;
-		this.padding = Style.Padding;
+		switch (this.flowParent.layout) {
+			case Vertical:
+				this.exactWidth = parent.innerWidth;
+				this.exactHeight = Std.int((
+					parent.innerHeight - parent.verticalSpacing
+				) / 2);
+
+				this.layout = Horizontal;
+				this.verticalAlign = Top;
+				this.horizontalAlign = Middle;
+				this.verticalSpacing = Style.ToolbarPadding;
+				this.horizontalSpacing = Style.ToolbarPadding;
+				this.padding = Style.Padding;
+			case Horizontal:
+				// mobile
+				this.exactHeight = parent.innerHeight;
+				this.exactWidth = Std.int((
+					parent.innerWidth - parent.horizontalSpacing
+				) / 2);
+
+				this.layout = Horizontal;
+				this.verticalAlign = Top;
+				this.horizontalAlign = Middle;
+				this.verticalSpacing = Style.ToolbarPadding;
+				this.horizontalSpacing = Style.ToolbarPadding;
+				this.padding = Style.Padding;
+			case layout:
+				throw 'invalid layout: $layout';
+		}
 
 		this.multiline = true;
 

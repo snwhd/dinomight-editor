@@ -44,17 +44,38 @@ class Client extends hxd.App {
 		this.toolbar = new Toolbar(this.flow);
 
 		var canvasContainer = new FlowBase(this.flow);
-		var maxWidth = this.flow.innerWidth - (
-			Style.Padding * 2  +
-			Style.ToolbarWidth +
-			Style.SidebarWidth
-		);
-		canvasContainer.exactHeight = this.flow.innerHeight;
-		canvasContainer.exactWidth = maxWidth;
-		canvasContainer.layout = Vertical;
-		canvasContainer.verticalAlign = Middle;
-		canvasContainer.horizontalAlign = Middle;
 		canvasContainer.backgroundColor = Style.BackgroundColor;
+		switch (this.flow.layout) {
+			case Horizontal:
+				var maxWidth = this.flow.innerWidth - (
+					Style.Padding * 2  +
+					Style.ToolbarWidth +
+					Style.SidebarWidth
+				);
+				canvasContainer.exactHeight = this.flow.innerHeight;
+				canvasContainer.exactWidth = maxWidth;
+				canvasContainer.layout = Vertical;
+				canvasContainer.verticalAlign = Middle;
+				canvasContainer.horizontalAlign = Middle;
+			case Vertical:
+				// mobile
+				var maxHeight = this.flow.innerHeight - (
+					Style.Padding * 2  +
+					Style.ToolbarWidth +
+					Style.SidebarWidth
+				);
+				canvasContainer.exactWidth = this.flow.innerWidth;
+				if (this.flow.innerWidth < maxHeight) {
+					canvasContainer.exactHeight = this.flow.innerWidth;
+				} else {
+					canvasContainer.exactHeight = maxHeight;
+				}
+				canvasContainer.layout = Horizontal;
+				canvasContainer.verticalAlign = Middle;
+				canvasContainer.horizontalAlign = Middle;
+			case layout:
+				throw 'invalid layout: $layout';
+		}
 
 		this.canvas = new Canvas(
 			this.toolbar,
@@ -64,11 +85,24 @@ class Client extends hxd.App {
 		);
 
 		var sidebar = new FlowBase(this.flow);
-		sidebar.layout = Vertical;
-		sidebar.verticalSpacing = Style.Padding;
-		sidebar.exactHeight = this.flow.innerHeight;
-		sidebar.exactWidth = Style.SidebarWidth;
 		sidebar.backgroundColor = Style.BackgroundColor;
+
+		switch (this.flow.layout) {
+			case Horizontal:
+				sidebar.layout = Vertical;
+				sidebar.verticalSpacing = Style.Padding;
+				sidebar.exactHeight = this.flow.innerHeight;
+				sidebar.exactWidth = Style.SidebarWidth;
+			case Vertical:
+				// mobile
+				sidebar.layout = Horizontal;
+				sidebar.horizontalSpacing = Style.Padding;
+				sidebar.exactWidth = this.flow.innerWidth;
+				sidebar.exactHeight = Style.SidebarWidth;
+				sidebar.verticalAlign = Top;
+			case layout:
+				throw 'invalid layout: $layout';
+		}
 
 		this.toolOptions = new ToolOptions(this.toolbar.currentTool, sidebar);
 		this.toolbar.onToolChanged = function (tool) {
@@ -77,23 +111,26 @@ class Client extends hxd.App {
 		};
 
 		this.settings = new Settings(this, sidebar);
-		this.settings.exactWidth = Style.SidebarWidth;
-		this.settings.exactHeight = Std.int((
-			sidebar.innerHeight - sidebar.verticalSpacing
-		) / 2);
 	}
 
 	private function makeFlow() {
 		var flow = new h2d.Flow(this.s2d);
 		flow.backgroundTile = h2d.Tile.fromColor(Style.BackgroundColor);
 
-		flow.layout = Horizontal;
+		if (this.s2d.width >= this.s2d.height) {
+			flow.layout = Horizontal;
+			flow.horizontalSpacing = Style.Padding;
+			flow.horizontalAlign = Left;
+			flow.verticalAlign = Top;
+		} else {
+			// mobile
+			flow.layout = Vertical;
+			flow.verticalSpacing = Style.Padding;
+			flow.horizontalAlign = Left;
+			flow.verticalAlign = Top;
+		}
+
 		flow.padding = Style.Padding;
-		flow.horizontalSpacing = Style.Padding;
-
-		flow.horizontalAlign = Left;
-		flow.verticalAlign = Middle;
-
 		flow.fillHeight = true;
 		flow.fillWidth = true;
 		return flow;

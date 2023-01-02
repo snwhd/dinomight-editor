@@ -18,7 +18,7 @@ class Export extends Option {
 	override function onClick() {
 		var content = this.settings.client.save();
 		// TODO: preserve filename from open?
-		var filename = 'filename.tmj';
+		var filename = 'dinomight_map.tmj';
 
 		#if js
 		var a = js.Browser.document.createAnchorElement();

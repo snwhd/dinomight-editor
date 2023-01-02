@@ -46,11 +46,11 @@ class Tool extends FlowBase {
 		this.layout = Vertical;
 		this.verticalAlign = Middle;
 		this.horizontalAlign = Middle;
-		this.padding = 12;
+		this.padding = 32;
 
-		this.exactWidth = Std.int(this.flowParent.innerWidth);
+		// this.exactWidth = Std.int(this.flowParent.innerWidth);
 
-		var tile= this.getIcon();
+		var tile = this.getIcon();
 		tile.scaleToSize(TOOL_SIZE, TOOL_SIZE);
 		new h2d.Bitmap(tile, this);
 	}

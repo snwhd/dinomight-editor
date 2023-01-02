@@ -19,15 +19,31 @@ class ToolOptions extends FlowBase {
 		super(parent);
 		this.tool = tool;
 
-		this.exactWidth = parent.innerWidth;
-		this.exactHeight = Std.int((
-			parent.innerHeight - parent.verticalSpacing
-		) / 2);
+		switch (this.flowParent.layout) {
+			case Vertical:
+				this.exactWidth = parent.innerWidth;
+				this.exactHeight = Std.int((
+					parent.innerHeight - parent.verticalSpacing
+				) / 2);
 
-		this.layout = Vertical;
-		this.verticalAlign = Top;
-		this.horizontalAlign = Middle;
-		this.verticalSpacing = Style.ToolbarPadding;
+				this.layout = Vertical;
+				this.verticalAlign = Top;
+				this.horizontalAlign = Middle;
+				this.verticalSpacing = Style.ToolbarPadding;
+			case Horizontal:
+				// mobile
+				this.exactHeight = parent.innerHeight;
+				this.exactWidth = Std.int((
+					parent.innerWidth - parent.horizontalSpacing
+				) / 2);
+
+				this.layout = Vertical;
+				this.verticalAlign = Top;
+				this.horizontalAlign = Middle;
+				this.verticalSpacing = Style.ToolbarPadding;
+			case layout:
+				throw 'invalid layout: $layout';
+		}
 
 		this.drawOptions();
 	}
@@ -44,16 +60,33 @@ class ToolOptions extends FlowBase {
 		this.addChild(title);
 
 		var container = new FlowBase(this);
-		container.exactWidth = this.innerWidth;
-		container.layout = Horizontal;
-		container.multiline = true;
-		container.overflow = Hidden;
-		container.padding = Style.ToolbarPadding;
-		container.verticalSpacing = Style.ToolbarPadding;
-		container.horizontalSpacing = Style.ToolbarPadding;
-		container.colWidth = Style.ToolbarCols;
-		container.horizontalAlign = Middle;
-		container.verticalAlign = Top;
+		switch (this.flowParent.layout) {
+			case Vertical:
+				container.exactWidth = this.innerWidth;
+				container.layout = Horizontal;
+				container.multiline = true;
+				container.overflow = Hidden;
+				container.padding = Style.ToolbarPadding;
+				container.verticalSpacing = Style.ToolbarPadding;
+				container.horizontalSpacing = Style.ToolbarPadding;
+				container.colWidth = Style.ToolbarCols;
+				container.horizontalAlign = Middle;
+				container.verticalAlign = Top;
+			case Horizontal:
+				// mobile
+				container.exactWidth = this.innerWidth;
+				container.layout = Horizontal;
+				container.multiline = true;
+				container.overflow = Hidden;
+				container.padding = Style.ToolbarPadding;
+				container.verticalSpacing = Style.ToolbarPadding;
+				container.horizontalSpacing = Style.ToolbarPadding;
+				container.colWidth = Style.ToolbarCols;
+				container.horizontalAlign = Middle;
+				container.verticalAlign = Top;
+			case layout:
+				throw 'invalid layout';
+		}
 
 		for (option in tool.getOptions()) {
 			container.addChild(option);
