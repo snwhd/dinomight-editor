@@ -71,11 +71,9 @@ class Pencil extends Tool {
 	}
 
 	override function push(x, y, canvas: Canvas, delta) {
-		if (delta) {
-			canvas.beginGroup();
-			this.place(x, y, canvas);
-			this.lastPlaced = new h2d.col.IPoint(x, y);
-		}
+		canvas.beginGroup();
+		this.place(x, y, canvas);
+		this.lastPlaced = new h2d.col.IPoint(x, y);
 	}
 
 	override function rightPush(x, y, canvas: Canvas, delta) {

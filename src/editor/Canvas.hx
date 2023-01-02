@@ -211,7 +211,9 @@ class Canvas extends FlowBase {
 
 		if (!undo) {
 			var prev = if (existing == null) null else existing.type;
-			appendAction(Put(x, y, t, prev));
+			if (t != prev) {
+				appendAction(Put(x, y, t, prev));
+			}
 		}
 	}
 
