@@ -1,5 +1,6 @@
 package editor.options;
 
+import editor.Style;
 import editor.Settings;
 import editor.util.FlowBase;
 import editor.util.TextUtil;
@@ -7,7 +8,7 @@ import editor.util.TextUtil;
 
 class Option extends FlowBase {
 
-	public static inline var ICON_SIZE = 128;
+	public static inline var ICON_SIZE = 32;
 
 	private var optionname : String;
 	private var settings : Settings;
@@ -43,7 +44,7 @@ class Option extends FlowBase {
 		this.padding = 12;
 
 		var tile = this.getIcon();
-		tile.scaleToSize(ICON_SIZE, ICON_SIZE);
+		tile.scaleToSize(Style.IconSize, Style.IconSize);
 		new h2d.Bitmap(tile, this);
 
 		// var text = TextUtil.text(this.optionname, Medium);

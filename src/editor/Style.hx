@@ -10,6 +10,12 @@ enum FontSize {
 }
 
 
+enum UILayout {
+    Horizontal;
+    Vertical;
+}
+
+
 class Style {
 
 	public static inline var Black = 0x000000;
@@ -26,16 +32,10 @@ class Style {
 
 	public static inline var InputColor = 0xFFFFFF;
 
-	public static inline var Padding = 40;
-	public static inline var MenuSpacing = 40;
-
-	public static inline var ToolbarWidth   = 400;
-	public static inline var ToolbarPadding = 12;
-	public static inline var ToolbarCols    = 4;
-
-	public static inline var SidebarWidth = 800;
+	public static inline var SidebarWidth = 168;
 
 	public static var fonts : Map<Int, h2d.Font> = [];
+    public static var fontSizes : Map<FontSize, Int>= [];
 
 	public static function exactFont(size = 0) : h2d.Font {
 		if (size == 0) {
@@ -51,13 +51,63 @@ class Style {
 	}
 
 	public static function font(size: FontSize) : h2d.Font {
-		return switch (size) {
-			case Default: Style.exactFont(0);
-			case Small:   Style.exactFont(24);
-			case Medium:  Style.exactFont(48);
-			case Large:   Style.exactFont(96);
-			case XLarge:  Style.exactFont(192);
-		}
+        return Style.exactFont(Style.fontSizes[size]);
 	}
+
+
+    // TODO: delete
+	public static inline var ToolbarCols    = 4;
+
+    public static var Layout : UILayout = Horizontal;
+
+	private static var BaseIconPadding = 16;
+	public static var IconPadding = 16;
+
+	private static var BaseIconSize = 48;
+	public static var IconSize = 32;
+
+	public static inline var Padding = 32;
+	public static inline var Spacing = 16;
+    public static inline var MenuSpacing = 8;
+
+    // toolbar
+    private static var RelToolbarSize = 0.10;
+    public static var ToolbarSize = 0;
+
+    // sidebar
+    private static var RelSidebarSize = 0.25;
+    public static var SidebarSize = 0;
+
+    public static function resize(width: Int, height: Int) {
+        var multiply : Int = 1;
+        if (height <= width) {
+            Style.Layout = Horizontal;
+            Style.ToolbarSize = Std.int(Style.RelToolbarSize * width);
+            Style.SidebarSize = Std.int(Style.RelSidebarSize * width);
+            multiply = Std.int(width / 1200);
+        } else {
+            Style.Layout = Vertical;
+            Style.ToolbarSize = Std.int(Style.RelToolbarSize * height);
+            Style.SidebarSize = Std.int(Style.RelSidebarSize * height);
+            multiply = Std.int(height / 800); // TODO 800?
+        }
+
+        if (multiply < 1) {
+            multiply = 1;
+        }
+
+        Style.IconPadding = Style.BaseIconPadding * multiply;
+        Style.IconSize = Style.BaseIconSize * multiply;
+        // TODO: spacing and padding?
+
+        Style.fontSizes = [
+		    Default =>  0,
+			Small   => 12 * multiply,
+			Medium  => 24 * multiply,
+			Large   => 48 * multiply,
+			XLarge  => 96 * multiply,
+        ];
+
+    }
 
 }

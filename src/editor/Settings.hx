@@ -1,6 +1,7 @@
 package editor;
 
 import editor.util.FlowBase;
+import editor.util.UIUtil;
 import editor.options.Export;
 import editor.options.Load;
 import editor.options.New;
@@ -18,34 +19,22 @@ class Settings extends FlowBase {
 		super(parent);
 		this.client = client;
 
-		switch (this.flowParent.layout) {
-			case Vertical:
+		switch (Style.Layout) {
+			case Horizontal:
+                UIUtil.initHbox(this);
+				this.horizontalAlign = Middle;
+				this.verticalSpacing = Style.Spacing;
 				this.exactWidth = parent.innerWidth;
 				this.exactHeight = Std.int((
 					parent.innerHeight - parent.verticalSpacing
 				) / 2);
-
-				this.layout = Horizontal;
-				this.verticalAlign = Top;
-				this.horizontalAlign = Middle;
-				this.verticalSpacing = Style.ToolbarPadding;
-				this.horizontalSpacing = Style.ToolbarPadding;
-				this.padding = Style.Padding;
-			case Horizontal:
-				// mobile
+			case Vertical:
+                UIUtil.initVbox(this);
+				this.horizontalSpacing = Style.Spacing;
 				this.exactHeight = parent.innerHeight;
 				this.exactWidth = Std.int((
 					parent.innerWidth - parent.horizontalSpacing
 				) / 2);
-
-				this.layout = Horizontal;
-				this.verticalAlign = Top;
-				this.horizontalAlign = Middle;
-				this.verticalSpacing = Style.ToolbarPadding;
-				this.horizontalSpacing = Style.ToolbarPadding;
-				this.padding = Style.Padding;
-			case layout:
-				throw 'invalid layout: $layout';
 		}
 
 		this.multiline = true;

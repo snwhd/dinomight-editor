@@ -1,6 +1,7 @@
 package editor.tools;
 
 import editor.util.FlowBase;
+import editor.util.UIUtil;
 
 
 class Toolbar extends FlowBase {
@@ -13,40 +14,24 @@ class Toolbar extends FlowBase {
 	public function new(parent: h2d.Flow) {
 		super(parent);
 
-		switch (parent.layout) {
-			case Vertical:
-				// mobile
-				this.layout = Horizontal;
-				this.horizontalSpacing = Style.MenuSpacing;
-				this.verticalAlign = Middle;
-				this.horizontalAlign = Left;
-
-				this.exactWidth = this.flowParent.innerWidth;
-				this.exactHeight = Style.ToolbarWidth;
-			case Horizontal:
-				this.layout = Vertical;
-				this.verticalSpacing = Style.MenuSpacing;
-				this.horizontalAlign = Middle;
-				this.verticalAlign = Top;
-
-				this.exactHeight = this.flowParent.innerHeight;
-				this.exactWidth = Style.ToolbarWidth;
-			case layout:
-				throw 'invalid layout: $layout';
-		}
-
 		this.padding = Style.Padding;
+		switch (Style.Layout) {
+            case Horizontal:
+                UIUtil.initVbox(this);
+				this.exactHeight = this.flowParent.innerHeight;
+			case Vertical:
+                UIUtil.initHbox(this);
+				this.verticalAlign = Middle;
+				this.exactWidth = this.flowParent.innerWidth;
+		}
 
 		this.tools = [
 			new Pencil(this),
 			new Eraser(this),
 			new Fill(this),
-			// new BoxSelect(this),
-			// new Wand(this),
-			// new Cursor(this),
 		];
-		this.currentTool.select();
 
+		this.currentTool.select();
 		for (tool in this.tools) {
 			this.addChild(tool);
 			tool.onIconClick = function () {

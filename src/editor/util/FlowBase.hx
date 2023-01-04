@@ -13,7 +13,7 @@ class FlowBase extends h2d.Flow {
 	public function new(?parent: h2d.Flow) {
 		super(parent);
 		this.backgroundColor = Style.ForegroundColor;
-		// this.overflow = Hidden;
+		this.overflow = Hidden;
 	}
 
 	public function get_flowParent() {

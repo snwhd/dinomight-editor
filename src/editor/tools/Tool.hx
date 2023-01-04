@@ -9,8 +9,6 @@ import editor.util.ImageUtil;
 
 class Tool extends FlowBase {
 
-	public static final TOOL_SIZE = 128;
-
 	public static final TOOL_NAMES : Map<ToolType, String> = [
 		Cursor    => "cursor",
 		Pencil    => "pencil",
@@ -43,15 +41,11 @@ class Tool extends FlowBase {
 	}
 
 	private function drawUI() {
-		this.layout = Vertical;
 		this.verticalAlign = Middle;
 		this.horizontalAlign = Middle;
-		this.padding = 32;
-
-		// this.exactWidth = Std.int(this.flowParent.innerWidth);
-
+		this.padding = Std.int(Style.IconPadding);
 		var tile = this.getIcon();
-		tile.scaleToSize(TOOL_SIZE, TOOL_SIZE);
+		tile.scaleToSize(Style.IconSize, Style.IconSize);
 		new h2d.Bitmap(tile, this);
 	}
 
@@ -75,14 +69,7 @@ class Tool extends FlowBase {
 		if (selected == null) {
 			selected = Block;
 		}
-		var width = Style.ToolbarWidth - (
-			(Style.ToolbarCols + 1) * Style.ToolbarPadding
-		);
-		var size = Std.int(width / Style.ToolbarCols);
-		size = 160;
-
-		var tilesMap = Canvas.loadIconTiles(size);
-
+		var tilesMap = Canvas.loadIconTiles(Style.IconSize);
 		var flows = [];
 		var tileOrder : Array<TileType> = [
 			Block,
@@ -98,8 +85,9 @@ class Tool extends FlowBase {
 			var tiles = tilesMap[type];
 			var tile = tiles[0];
 			var flow = new FlowBase();
-			flow.exactWidth = size;
-			flow.exactHeight = size;
+            flow.padding = Style.IconPadding;
+            flow.exactWidth = Style.IconSize + 2*Style.IconPadding;
+            flow.exactHeight= Style.IconSize + 2*Style.IconPadding;
 			flow.verticalAlign = Middle;
 			flow.horizontalAlign = Middle;
 			flow.enableInteractive = true;
@@ -117,6 +105,7 @@ class Tool extends FlowBase {
 				// highlight selected option to start
 				flow.interactive.onClick(null);
 			}
+
 			flows.push(flow);
 		}
 		// flows[0].interactive.onClick(null);

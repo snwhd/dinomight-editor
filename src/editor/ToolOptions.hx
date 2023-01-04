@@ -1,9 +1,11 @@
 package editor;
 
 import editor.TileType;
+import editor.Style;
 
 import editor.util.FlowBase;
 import editor.util.TextUtil;
+import editor.util.UIUtil;
 import editor.tools.Tool;
 import editor.tools.Pencil;
 import editor.tools.Fill;
@@ -19,30 +21,23 @@ class ToolOptions extends FlowBase {
 		super(parent);
 		this.tool = tool;
 
-		switch (this.flowParent.layout) {
-			case Vertical:
+		switch (Style.Layout) {
+			case Horizontal:
+                UIUtil.initVbox(this);
+				this.horizontalAlign = Middle;
+				this.verticalSpacing = Style.Spacing;
 				this.exactWidth = parent.innerWidth;
 				this.exactHeight = Std.int((
 					parent.innerHeight - parent.verticalSpacing
 				) / 2);
-
-				this.layout = Vertical;
-				this.verticalAlign = Top;
+			case Vertical:
+				UIUtil.initVbox(this);
 				this.horizontalAlign = Middle;
-				this.verticalSpacing = Style.ToolbarPadding;
-			case Horizontal:
-				// mobile
+				this.verticalSpacing = Style.Spacing;
 				this.exactHeight = parent.innerHeight;
 				this.exactWidth = Std.int((
 					parent.innerWidth - parent.horizontalSpacing
 				) / 2);
-
-				this.layout = Vertical;
-				this.verticalAlign = Top;
-				this.horizontalAlign = Middle;
-				this.verticalSpacing = Style.ToolbarPadding;
-			case layout:
-				throw 'invalid layout: $layout';
 		}
 
 		this.drawOptions();
@@ -50,46 +45,21 @@ class ToolOptions extends FlowBase {
 
 	private function drawOptions() {
 		this.removeChildren();
-		var spacer = new FlowBase();
-		spacer.exactHeight = Style.ToolbarPadding;
-		spacer.exactWidth = 1;
-		this.addChild(spacer);
-
-		var text = '${this.tool.toolname} options';
-		var title = TextUtil.text(text, Medium);
-		this.addChild(title);
 
 		var container = new FlowBase(this);
-		switch (this.flowParent.layout) {
-			case Vertical:
-				container.exactWidth = this.innerWidth;
-				container.layout = Horizontal;
-				container.multiline = true;
-				container.overflow = Hidden;
-				container.padding = Style.ToolbarPadding;
-				container.verticalSpacing = Style.ToolbarPadding;
-				container.horizontalSpacing = Style.ToolbarPadding;
-				container.colWidth = Style.ToolbarCols;
-				container.horizontalAlign = Middle;
-				container.verticalAlign = Top;
-			case Horizontal:
-				// mobile
-				container.exactWidth = this.innerWidth;
-				container.layout = Horizontal;
-				container.multiline = true;
-				container.overflow = Hidden;
-				container.padding = Style.ToolbarPadding;
-				container.verticalSpacing = Style.ToolbarPadding;
-				container.horizontalSpacing = Style.ToolbarPadding;
-				container.colWidth = Style.ToolbarCols;
-				container.horizontalAlign = Middle;
-				container.verticalAlign = Top;
-			case layout:
-				throw 'invalid layout';
-		}
+		container.exactWidth = this.innerWidth;
+		container.layout = Horizontal;
+		container.multiline = true;
+		container.horizontalAlign = Middle;
+		container.verticalAlign = Top;
+		container.verticalSpacing = Style.MenuSpacing;
+		container.horizontalSpacing = Style.MenuSpacing;
+        container.overflow = Scroll;
 
+        var childWidth : Int = 0;
 		for (option in tool.getOptions()) {
 			container.addChild(option);
+            childWidth = container.outerWidth;
 		}
 
 		this.optionContainer = container;

@@ -2,6 +2,7 @@ package editor;
 
 import editor.tools.Toolbar;
 import editor.util.FlowBase;
+import editor.util.UIUtil;
 
 
 class Client extends hxd.App {
@@ -27,7 +28,9 @@ class Client extends hxd.App {
 	override function init() {
 		hxd.Res.initEmbed();
 		hxd.Window.getInstance().addEventTarget(onEvent);
+
 		this.makeUI();
+
 		#if js
 		js.Browser.window.onbeforeunload = function (e) {
 			this.autosave();
@@ -38,70 +41,28 @@ class Client extends hxd.App {
 	}
 
 	public function makeUI() {
+        Style.resize(this.s2d.width, this.s2d.height);
 		this.s2d.removeChildren();
-		this.flow = this.makeFlow();
+
+        // root ui element
+		this.flow = UIUtil.uibox(this.s2d);
+        this.flow.fillHeight = true;
+        this.flow.fillWidth = true;
+		this.flow.backgroundTile = h2d.Tile.fromColor(Style.BackgroundColor);
 
 		this.toolbar = new Toolbar(this.flow);
 
-		var canvasContainer = new FlowBase(this.flow);
-		canvasContainer.backgroundColor = Style.BackgroundColor;
-		switch (this.flow.layout) {
-			case Horizontal:
-				var maxWidth = this.flow.innerWidth - (
-					Style.Padding * 2  +
-					Style.ToolbarWidth +
-					Style.SidebarWidth
-				);
-				canvasContainer.exactHeight = this.flow.innerHeight;
-				canvasContainer.exactWidth = maxWidth;
-				canvasContainer.layout = Vertical;
-				canvasContainer.verticalAlign = Middle;
-				canvasContainer.horizontalAlign = Middle;
-			case Vertical:
-				// mobile
-				var maxHeight = this.flow.innerHeight - (
-					Style.Padding * 2  +
-					Style.ToolbarWidth +
-					Style.SidebarWidth
-				);
-				canvasContainer.exactWidth = this.flow.innerWidth;
-				if (this.flow.innerWidth < maxHeight) {
-					canvasContainer.exactHeight = this.flow.innerWidth;
-				} else {
-					canvasContainer.exactHeight = maxHeight;
-				}
-				canvasContainer.layout = Horizontal;
-				canvasContainer.verticalAlign = Middle;
-				canvasContainer.horizontalAlign = Middle;
-			case layout:
-				throw 'invalid layout: $layout';
-		}
-
-		this.canvas = new Canvas(
-			this.toolbar,
-			canvasContainer,
-			this.canvasWidth,
-			this.canvasHeight
-		);
-
 		var sidebar = new FlowBase(this.flow);
 		sidebar.backgroundColor = Style.BackgroundColor;
-
-		switch (this.flow.layout) {
+		switch (Style.Layout) {
 			case Horizontal:
-				sidebar.layout = Vertical;
-				sidebar.verticalSpacing = Style.Padding;
+                UIUtil.initVbox(sidebar);
 				sidebar.exactHeight = this.flow.innerHeight;
-				sidebar.exactWidth = Style.SidebarWidth;
+				sidebar.exactWidth = Style.SidebarSize;
 			case Vertical:
-				// mobile
-				sidebar.layout = Horizontal;
-				sidebar.horizontalSpacing = Style.Padding;
+				UIUtil.initHbox(sidebar);
 				sidebar.exactWidth = this.flow.innerWidth;
-				sidebar.exactHeight = Style.SidebarWidth;
-				sidebar.verticalAlign = Top;
-			case layout:
-				throw 'invalid layout: $layout';
+				sidebar.exactHeight = Style.SidebarSize;
 		}
 
 		this.toolOptions = new ToolOptions(this.toolbar.currentTool, sidebar);
@@ -111,33 +72,45 @@ class Client extends hxd.App {
 		};
 
 		this.settings = new Settings(this, sidebar);
-	}
 
-	private function makeFlow() {
-		var flow = new h2d.Flow(this.s2d);
-		flow.backgroundTile = h2d.Tile.fromColor(Style.BackgroundColor);
+		var canvasContainer = new FlowBase();
+        this.flow.addChildAt(canvasContainer, 1);
+		canvasContainer.backgroundColor = Style.BackgroundColor;
 
-		if (this.s2d.width >= this.s2d.height) {
-			flow.layout = Horizontal;
-			flow.horizontalSpacing = Style.Padding;
-			flow.horizontalAlign = Left;
-			flow.verticalAlign = Top;
-		} else {
-			// mobile
-			flow.layout = Vertical;
-			flow.verticalSpacing = Style.Padding;
-			flow.horizontalAlign = Left;
-			flow.verticalAlign = Top;
+		switch (Style.Layout) {
+			case Horizontal:
+                UIUtil.initVbox(canvasContainer);
+				canvasContainer.verticalAlign = Middle;
+				canvasContainer.exactHeight = this.flow.innerHeight;
+				canvasContainer.exactWidth = this.flow.innerWidth - (
+					Style.Spacing * 2  +
+					sidebar.outerWidth +
+        			toolbar.outerWidth
+				);
+			case Vertical:
+				UIUtil.initHbox(canvasContainer);
+				canvasContainer.verticalAlign = Middle;
+				canvasContainer.horizontalAlign = Middle;
+				var maxHeight = this.flow.innerHeight - (
+					Style.Spacing * 2  +
+					Style.ToolbarSize +
+					Style.SidebarSize
+				);
+				canvasContainer.exactWidth = this.flow.innerWidth;
+				canvasContainer.exactHeight = this.flow.innerWidth;
+				if (this.flow.innerWidth > maxHeight) {
+					canvasContainer.exactHeight = maxHeight;
+				}
 		}
 
-		flow.padding = Style.Padding;
-		flow.fillHeight = true;
-		flow.fillWidth = true;
-		return flow;
-	}
+		this.canvas = new Canvas(
+			this.toolbar,
+			canvasContainer,
+			this.canvasWidth,
+			this.canvasHeight
+		);
 
-	// private function makeEditor(parent) : Editor {
-	// }
+	}
 
 	override function update(dt: Float) {
 	}
@@ -370,21 +343,25 @@ class Client extends hxd.App {
 				} else {
 					this.toolbar.next();
 				}
-			case hxd.Key.NUMBER_1:
+			case hxd.Key.Q:
 				this.toolOptions.number(1);
-			case hxd.Key.NUMBER_2:
+			case hxd.Key.W:
 				this.toolOptions.number(2);
-			case hxd.Key.NUMBER_3:
+			case hxd.Key.E:
 				this.toolOptions.number(3);
-			case hxd.Key.NUMBER_4:
+			case hxd.Key.R:
 				this.toolOptions.number(4);
-			case hxd.Key.NUMBER_5:
+			case hxd.Key.T:
 				this.toolOptions.number(5);
-			case hxd.Key.NUMBER_6:
-				this.toolOptions.number(6);
-			case hxd.Key.NUMBER_7:
+			case hxd.Key.Y:
+				if (ctrl) {
+					this.canvas.redo();
+				} else {
+				    this.toolOptions.number(6);
+                }
+			case hxd.Key.U:
 				this.toolOptions.number(7);
-			case hxd.Key.NUMBER_8:
+			case hxd.Key.I:
 				this.toolOptions.number(8);
 			case hxd.Key.Z:
 				if (ctrl) {
@@ -393,10 +370,6 @@ class Client extends hxd.App {
 					} else {
 						this.canvas.undo();
 					}
-				}
-			case hxd.Key.Y:
-				if (ctrl) {
-					this.canvas.redo();
 				}
 			case _:
 		}
