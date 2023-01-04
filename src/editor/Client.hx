@@ -40,7 +40,11 @@ class Client extends hxd.App {
         #end
     }
 
-    public function makeUI() {
+    override function onResize() {
+        this.makeUI(true);
+    }
+
+    public function makeUI(preserveCanvas=false) {
         Style.resize(this.s2d.width, this.s2d.height);
         this.s2d.removeChildren();
 
@@ -103,12 +107,19 @@ class Client extends hxd.App {
                 }
         }
 
-        this.canvas = new Canvas(
-            this.toolbar,
-            canvasContainer,
-            this.canvasWidth,
-            this.canvasHeight
-        );
+        if (preserveCanvas && this.canvas != null) {
+            trace('preserving canvas');
+            this.canvas.remove();
+            canvasContainer.addChild(this.canvas);
+            this.canvas.redraw();
+        } else {
+            this.canvas = new Canvas(
+                this.toolbar,
+                canvasContainer,
+                this.canvasWidth,
+                this.canvasHeight
+            );
+        }
 
     }
 

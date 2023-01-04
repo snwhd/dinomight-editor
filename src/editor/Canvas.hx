@@ -10,6 +10,8 @@ import editor.tools.Toolbar;
 typedef CanvasTile = {
     type: TileType,
     bmp: h2d.Bitmap,
+    x: Int,
+    y: Int,
 }
 
 
@@ -42,7 +44,7 @@ class Canvas extends FlowBase {
 
     public var canvasWidth : Int;
     public var canvasHeight : Int;
-    private var canvasBackground : h2d.Object;
+    private var canvasBackground : h2d.Bitmap;
     public var tiles : Array<Null<CanvasTile>> = [];
 
     private var iconTiles : Map<TileType, Array<h2d.Tile>>;
@@ -61,15 +63,26 @@ class Canvas extends FlowBase {
         super(parent);
         this.toolbar = toolbar;
         this.assertValidSize(width, height);
-
         // increase for the outer ring of trees
         this.canvasHeight = height + 2;
         this.canvasWidth = width + 2;
-
         this.tiles.resize(this.canvasWidth * this.canvasHeight);
+        this.redraw();
 
-        var maxWidth = parent.innerWidth;
-        var maxHeight = parent.innerHeight;
+        this.rand = Random.createSafeRand();
+        for (x in 0 ... this.canvasWidth) {
+            this.put(x, 0, Tree, true);
+            this.put(x, this.canvasHeight - 1, Tree, true);
+        }
+        for (y in 0 ... this.canvasHeight) {
+            this.put(0, y, Tree, true);
+            this.put(this.canvasWidth - 1, y, Tree, true);
+        }
+    }
+
+    public function redraw() {
+        var maxWidth = this.flowParent.innerWidth;
+        var maxHeight = this.flowParent.innerHeight;
         var maxFlowSize = Std.int(Math.min(maxWidth, maxHeight));
 
         var maxIconWidth = maxFlowSize / this.canvasWidth;
@@ -90,17 +103,21 @@ class Canvas extends FlowBase {
         this.interactive.onOut = this.onOut;
         this.interactive.onOver = this.onOver;
 
+        if (this.canvasBackground != null) {
+            this.canvasBackground.remove();
+        }
+
         this.canvasBackground = this.createBackground();
         this.addChild(this.canvasBackground);
 
-        this.rand = Random.createSafeRand();
-        for (x in 0 ... this.canvasWidth) {
-            this.put(x, 0, Tree, true);
-            this.put(x, this.canvasHeight - 1, Tree, true);
-        }
-        for (y in 0 ... this.canvasHeight) {
-            this.put(0, y, Tree, true);
-            this.put(this.canvasWidth - 1, y, Tree, true);
+        // preserve tiles
+        var oldTiles = this.tiles;
+        this.tiles = [];
+        this.tiles.resize(this.canvasWidth * this.canvasHeight);
+        for (tile in oldTiles) {
+            if (tile != null) {
+                this.put(tile.x, tile.y, tile.type, true);
+            }
         }
     }
 
@@ -127,7 +144,7 @@ class Canvas extends FlowBase {
         return tiles;
     }
 
-    private function createBackground() : h2d.Object {
+    private function createBackground() : h2d.Bitmap {
         var pixels = hxd.Pixels.alloc(
             this.canvasWidth,
             this.canvasHeight,
@@ -206,6 +223,8 @@ class Canvas extends FlowBase {
             this.tiles[index] = {
                 type: t,
                 bmp: bmp,
+                x: x,
+                y: y,
             }
         }
 
