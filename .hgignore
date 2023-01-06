@@ -1,4 +1,6 @@
 \.n$
 \.swp$
+\.swo$
 \.js$
 \.js.map$
+\.tmj$
