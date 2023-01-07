@@ -22,6 +22,7 @@ class Client extends hxd.App {
 
 
     static function main() {
+        hxd.System.fpsLimit = 60;
         new Client();
     }
 
@@ -108,7 +109,6 @@ class Client extends hxd.App {
         }
 
         if (preserveCanvas && this.canvas != null) {
-            trace('preserving canvas');
             this.canvas.remove();
             canvasContainer.addChild(this.canvas);
             this.canvas.redraw();
